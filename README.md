@@ -2,6 +2,12 @@
 
 Universal code scanner with webhook integration.
 
+Developed by [Grapph](https://grapph.com)
+
+Download on [Google Play](https://play.google.com/store/apps/details?id=com.grapph.allcoderelay)
+
+Pre-order on [App Store](https://apps.apple.com/us/app/allcoderelay/id6447867807)
+
 ## Features
 
 - QR Code and Barcode scanning
