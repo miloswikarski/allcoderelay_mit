@@ -8,6 +8,8 @@ Download on [Google Play](https://play.google.com/store/apps/details?id=com.grap
 
 Pre-order on [App Store](https://apps.apple.com/us/app/allcoderelay/id6447867807)
 
+![AllCodeRelay](acr.jpg)
+
 ## Features
 
 - QR Code and Barcode scanning
@@ -99,29 +101,30 @@ If the server returns a non-200 status code or the response cannot be parsed, th
 
 ### Default Webhook
 
-The app comes with a default webhook URL set to `https://n8n.grapph.com/webhook/allcoderelay`. This webhook is designed to work out-of-the-box and can be used for testing purposes. 
+The app comes with a default webhook URL set to `https://n8n.grapph.com/webhook/allcoderelay`. This webhook is designed to work out-of-the-box and can be used for testing purposes.
 
 This n8n workflow provides several intelligent responses based on the scanned code:
- - EAN 13 Barcodes: Returns a link to product information
- - NFC Door Tags: Returns a link to open the door
- - Other QR, Aztec, or Data Matrix Codes: Uses AI to analyze and provide information about the scanned code
 
- The workflow includes:
- - code type detection
- - integration with OpenAI for AI analysis
- - SerpAPI for product information lookup
- - conditionals for different code types
+- EAN 13 Barcodes: Returns a link to product information
+- NFC Door Tags: Returns a link to open the door
+- Other QR, Aztec, or Data Matrix Codes: Uses AI to analyze and provide information about the scanned code
+
+The workflow includes:
+
+- code type detection
+- integration with OpenAI for AI analysis
+- SerpAPI for product information lookup
+- conditionals for different code types
 
 You can view an example of this [workflow](https://grapph.com/allcoderelay/allcoderelay.json) in the n8n workflow file included with this documentation.
 
- To use this workflow, you need to:
+To use this workflow, you need to:
 
- - Import the workflow into n8n
- - Set the OpenAI and SerpAPI API keys in the workflow
- - Update the webhook URL in the app to point to your n8n instance
+- Import the workflow into n8n
+- Set the OpenAI and SerpAPI API keys in the workflow
+- Update the webhook URL in the app to point to your n8n instance
 
 ![n8n webhook](https://grapph.com/allcoderelay/n8n_webhook.png)
-
 
 ### Example Implementation
 
