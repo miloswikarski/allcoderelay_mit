@@ -61,7 +61,7 @@ Configure the app by scanning a special QR code with this format:
 allcoderelay://setwebhookurl?url=https://your-webhook.com&title=My%20Webhook&headers={"Authorization":"Bearer%20token","Content-Type":"application/json"}
 ```
 
-Use our [webhook configuration tool](webroot/webhook_config.php) to easily generate these QR codes.
+Use our [webhook configuration tool](https://grapph.com/allcoderelay/webhook_config.php) to easily generate these QR codes.
 
 ### POST Request Format
 
@@ -90,6 +90,32 @@ Where:
 - `codevalue`: The processed value or meaning of the code
 
 If the server returns a non-200 status code or the response cannot be parsed, the app will store the scan locally.
+
+### Default Webhook
+
+The app comes with a default webhook URL set to `https://n8n.grapph.com/webhook/allcoderelay`. This webhook is designed to work out-of-the-box and can be used for testing purposes. 
+
+This n8n workflow provides several intelligent responses based on the scanned code:
+ - EAN 13 Barcodes: Returns a link to product information
+ - NFC Door Tags: Returns a link to open the door
+ - Other QR, Aztec, or Data Matrix Codes: Uses AI to analyze and provide information about the scanned code
+
+ The workflow includes:
+ - code type detection
+ - integration with OpenAI for AI analysis
+ - SerpAPI for product information lookup
+ - conditionals for different code types
+
+You can view an example of this [workflow](https://grapph.com/allcoderelay/allcoderelay.json) in the n8n workflow file included with this documentation.
+
+ To use this workflow, you need to:
+
+ - Import the workflow into n8n
+ - Set the OpenAI and SerpAPI API keys in the workflow
+ - Update the webhook URL in the app to point to your n8n instance
+
+![n8n webhook](https://grapph.com/allcoderelay/n8n_webhook.png)
+
 
 ### Example Implementation
 
