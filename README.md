@@ -128,7 +128,7 @@ To use this workflow, you need to:
 
 ### Another funny webhook worth to test
 
-![ai_fun_webhook](assets/images/qrwebhook2.png){ width=50% }
+![ai_fun_webhook](assets/images/qrwebhook2.png =300x)
 
 ### Example Implementation
 
