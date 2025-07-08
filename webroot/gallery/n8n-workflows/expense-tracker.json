@@ -1,0 +1,428 @@
+{
+  "name": "AllCodeRelay Expense Tracker",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "expense-tracker",
+        "responseMode": "responseNode",
+        "options": {
+          "ignoreBots": false
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1200,
+        300
+      ],
+      "id": "expense-webhook",
+      "name": "Expense Webhook",
+      "webhookId": "expense-tracker-webhook-id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "extract-code",
+              "name": "scanned_code",
+              "value": "={{ $json.body.parseJson().code }}",
+              "type": "string"
+            },
+            {
+              "id": "extract-timestamp",
+              "name": "scan_timestamp",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -980,
+        300
+      ],
+      "id": "extract-data",
+      "name": "Extract Scan Data"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-receipt-pattern",
+              "leftValue": "={{ $json.scanned_code }}",
+              "rightValue": "^(https?://|www\\.|receipt|invoice|bill)",
+              "operator": {
+                "type": "string",
+                "operation": "regex",
+                "name": "filter.operator.regex"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -760,
+        300
+      ],
+      "id": "check-receipt-type",
+      "name": "Is Receipt/Invoice?"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.scanned_code }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -540,
+        200
+      ],
+      "id": "fetch-receipt-data",
+      "name": "Fetch Receipt Data"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "ai-receipt-parser",
+      "name": "AI Receipt Parser",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -320,
+        200
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract expense information from this receipt data:\n\n{{ $json.data || $json.scanned_code }}\n\nReturn ONLY a JSON object with these fields:\n{\n  \"merchant\": \"store name\",\n  \"amount\": \"total amount as number\",\n  \"currency\": \"currency code\",\n  \"date\": \"YYYY-MM-DD\",\n  \"category\": \"expense category\",\n  \"items\": [\"list of items purchased\"],\n  \"tax_amount\": \"tax amount as number\",\n  \"payment_method\": \"cash/card/etc\"\n}\n\nIf this is not a receipt, return: {\"error\": \"Not a valid receipt\"}",
+        "options": {
+          "systemMessage": "You are an expert at parsing receipts and invoices. Extract structured data accurately. Always return valid JSON only, no additional text."
+        }
+      },
+      "id": "parse-receipt-prompt",
+      "name": "Parse Receipt with AI",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -100,
+        200
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse AI response and validate expense data\nconst aiResponse = $input.first().json.output;\nlet expenseData;\n\ntry {\n  // Try to parse the AI response as JSON\n  if (typeof aiResponse === 'string') {\n    expenseData = JSON.parse(aiResponse);\n  } else {\n    expenseData = aiResponse;\n  }\n  \n  // Check if it's an error response\n  if (expenseData.error) {\n    return [{\n      \"is_valid_expense\": false,\n      \"error_message\": expenseData.error,\n      \"original_code\": $('Extract Scan Data').item.json.scanned_code\n    }];\n  }\n  \n  // Validate required fields\n  const required = ['merchant', 'amount', 'date'];\n  const missing = required.filter(field => !expenseData[field]);\n  \n  if (missing.length > 0) {\n    return [{\n      \"is_valid_expense\": false,\n      \"error_message\": `Missing required fields: ${missing.join(', ')}`,\n      \"original_code\": $('Extract Scan Data').item.json.scanned_code\n    }];\n  }\n  \n  // Format and validate the data\n  const formattedExpense = {\n    \"is_valid_expense\": true,\n    \"merchant\": expenseData.merchant,\n    \"amount\": parseFloat(expenseData.amount) || 0,\n    \"currency\": expenseData.currency || 'USD',\n    \"date\": expenseData.date,\n    \"category\": expenseData.category || 'General',\n    \"items\": Array.isArray(expenseData.items) ? expenseData.items : [],\n    \"tax_amount\": parseFloat(expenseData.tax_amount) || 0,\n    \"payment_method\": expenseData.payment_method || 'Unknown',\n    \"scan_timestamp\": $('Extract Scan Data').item.json.scan_timestamp,\n    \"original_code\": $('Extract Scan Data').item.json.scanned_code\n  };\n  \n  return [formattedExpense];\n  \n} catch (error) {\n  return [{\n    \"is_valid_expense\": false,\n    \"error_message\": \"Failed to parse receipt data: \" + error.message,\n    \"original_code\": $('Extract Scan Data').item.json.scanned_code\n  }];\n}"
+      },
+      "id": "validate-expense-data",
+      "name": "Validate Expense Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        120,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-valid-expense",
+              "leftValue": "={{ $json.is_valid_expense }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        340,
+        300
+      ],
+      "id": "check-valid-expense",
+      "name": "Valid Expense?"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "your-expense-spreadsheet-id",
+          "mode": "id"
+        },
+        "sheetName": "Expenses",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.date }}",
+            "Merchant": "={{ $json.merchant }}",
+            "Amount": "={{ $json.amount }}",
+            "Currency": "={{ $json.currency }}",
+            "Category": "={{ $json.category }}",
+            "Items": "={{ $json.items.join(', ') }}",
+            "Tax": "={{ $json.tax_amount }}",
+            "Payment Method": "={{ $json.payment_method }}",
+            "Scan Time": "={{ $json.scan_timestamp }}",
+            "Original Code": "={{ $json.original_code }}"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        560,
+        200
+      ],
+      "id": "log-to-sheets",
+      "name": "Log to Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-credentials",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "channel": "#expenses",
+        "text": "💰 New Expense Logged!\n\n🏪 **{{ $json.merchant }}**\n💵 ${{ $json.amount }} {{ $json.currency }}\n📅 {{ $json.date }}\n🏷️ {{ $json.category }}\n💳 {{ $json.payment_method }}\n\n📝 Items: {{ $json.items.join(', ') || 'N/A' }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        560,
+        320
+      ],
+      "id": "notify-slack",
+      "name": "Notify Slack",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "slack-credentials",
+          "name": "Slack"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"code\": \"{{ $('Extract Scan Data').item.json.scanned_code }}\",\n  \"codevalue\": \"💰 Expense Logged!\\n\\n🏪 {{ $json.merchant }}\\n💵 ${{ $json.amount }} {{ $json.currency }}\\n📅 {{ $json.date }}\\n🏷️ {{ $json.category }}\\n\\n✅ Added to expense tracker\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        780,
+        200
+      ],
+      "id": "respond-success",
+      "name": "Respond Success"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"code\": \"{{ $('Extract Scan Data').item.json.scanned_code }}\",\n  \"codevalue\": \"❌ Invalid Receipt\\n\\n{{ $json.error_message || 'Could not process this as an expense receipt.' }}\\n\\nPlease scan a valid receipt or invoice.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        780,
+        400
+      ],
+      "id": "respond-error",
+      "name": "Respond Error"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"code\": \"{{ $json.scanned_code }}\",\n  \"codevalue\": \"❓ Not a Receipt\\n\\nThis doesn't appear to be a receipt or invoice.\\n\\nPlease scan:\\n• Receipt QR codes\\n• Invoice URLs\\n• Digital receipt links\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        -540,
+        400
+      ],
+      "id": "respond-not-receipt",
+      "name": "Respond Not Receipt"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Expense Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Scan Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Scan Data": {
+      "main": [
+        [
+          {
+            "node": "Is Receipt/Invoice?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Receipt/Invoice?": {
+      "main": [
+        [
+          {
+            "node": "Fetch Receipt Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Not Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Receipt Data": {
+      "main": [
+        [
+          {
+            "node": "Parse Receipt with AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Receipt Parser": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Parse Receipt with AI",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Receipt with AI": {
+      "main": [
+        [
+          {
+            "node": "Validate Expense Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Expense Data": {
+      "main": [
+        [
+          {
+            "node": "Valid Expense?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Expense?": {
+      "main": [
+        [
+          {
+            "node": "Log to Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Slack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "expense-tracker-v1",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "expense-tracker-instance"
+  },
+  "id": "expense-tracker-workflow",
+  "tags": ["allcoderelay", "expenses", "automation"]
+}

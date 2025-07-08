@@ -1,0 +1,32 @@
+{
+  "name": "allcoderelay-restaurant-menu-webhook",
+  "version": "1.0.0",
+  "description": "Smart restaurant menu webhook for AllCodeRelay app",
+  "main": "restaurant-menu-webhook.js",
+  "scripts": {
+    "start": "node restaurant-menu-webhook.js",
+    "dev": "nodemon restaurant-menu-webhook.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "restaurant",
+    "menu",
+    "qr-code",
+    "webhook",
+    "allcoderelay",
+    "hospitality",
+    "dining"
+  ],
+  "author": "AllCodeRelay Gallery",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

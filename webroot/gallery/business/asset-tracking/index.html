@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏷️ Asset Tracking Webhook - AllCodeRelay Gallery</title>
+    <link rel="stylesheet" href="../../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .tech-badge {
+            display: inline-block;
+            background: #8993be;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .alert-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+        }
+        
+        .status-available { background: #e8f5e8; color: #2e7d32; }
+        .status-checked-out { background: #fff3e0; color: #f57c00; }
+        .status-maintenance { background: #e3f2fd; color: #1976d2; }
+        .status-retired { background: #ffebee; color: #d32f2f; }
+        .status-lost { background: #fce4ec; color: #c2185b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1>🏷️ Asset Tracking Webhook</h1>
+            <p class="lead">
+                A comprehensive PHP webhook for tracking corporate assets and equipment through QR code scanning.
+            </p>
+            <div class="mb-3">
+                <span class="tech-badge">PHP</span>
+                <span class="tech-badge">SQLite</span>
+                <span class="tech-badge">Portable</span>
+            </div>
+            <a href="../../../webhook_config.php" class="btn btn-demo btn-lg">
+                <i class="bi bi-qr-code"></i> Configure Webhook
+            </a>
+            <a href="../asset-tracking-README.md" class="btn btn-demo btn-lg">
+                <i class="bi bi-book"></i> Full Documentation
+            </a>
+        </div>
+
+        <!-- Features Section -->
+        <div class="content-card">
+            <h2><i class="bi bi-star"></i> Key Features</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Asset Registration</strong> - Complete asset database with detailed information</li>
+                        <li><strong>Check-in/Check-out</strong> - Track who has what equipment and when</li>
+                        <li><strong>Location Tracking</strong> - Monitor asset locations across buildings and rooms</li>
+                        <li><strong>Maintenance Scheduling</strong> - Track maintenance due dates and alerts</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Asset History</strong> - Complete audit trail of all asset activities</li>
+                        <li><strong>Status Management</strong> - Available, checked out, maintenance, retired states</li>
+                        <li><strong>Condition Tracking</strong> - Monitor asset condition ratings</li>
+                        <li><strong>Portable Database</strong> - Uses SQLite for easy deployment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Asset Status Types -->
+        <div class="content-card">
+            <h2><i class="bi bi-tags"></i> Asset Status Types</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <span class="status-badge status-available">🟢 Available</span>
+                        <p class="mt-2">Asset is ready for use, can be checked out, located at designated spot.</p>
+                    </div>
+                    <div class="mb-3">
+                        <span class="status-badge status-checked-out">🟡 Checked Out</span>
+                        <p class="mt-2">Asset is assigned to a user, shows who has it and since when.</p>
+                    </div>
+                    <div class="mb-3">
+                        <span class="status-badge status-maintenance">🔧 In Maintenance</span>
+                        <p class="mt-2">Asset is being serviced, not available for checkout.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <span class="status-badge status-retired">🔴 Retired</span>
+                        <p class="mt-2">Asset is no longer in service, kept for historical records.</p>
+                    </div>
+                    <div class="mb-3">
+                        <span class="status-badge status-lost">❌ Lost/Missing</span>
+                        <p class="mt-2">Asset cannot be located, requires investigation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Examples -->
+        <div class="content-card">
+            <h2><i class="bi bi-phone"></i> Usage Examples</h2>
+            
+            <h4>🟢 Available Asset</h4>
+            <p>When scanning an available asset:</p>
+            <div class="code-block">
+🏷️ Dell Latitude 7420
+
+📋 ID: LAPTOP001
+🏢 Category: Computers
+📍 Location: IT Department
+📊 Status: Available 🟢
+
+⏰ Updated: Dec 15, 2024 14:30
+            </div>
+
+            <h4>🟡 Checked Out Asset</h4>
+            <p>For assets currently in use:</p>
+            <div class="code-block">
+🏷️ Samsung 27" Monitor
+
+📋 ID: MONITOR002
+🏢 Category: Monitors
+📍 Location: Office Floor 1
+📊 Status: Checked Out 🟡
+👤 Checked out to: John Smith
+📅 Since: Dec 10, 2024
+
+⏰ Updated: Dec 15, 2024 09:15
+            </div>
+
+            <h4>🔧 Maintenance Due</h4>
+            <p>For assets requiring maintenance:</p>
+            <div class="code-block">
+🏷️ Cordless Drill
+
+📋 ID: DRILL004
+🏢 Category: Tools
+📍 Location: Warehouse
+📊 Status: In Maintenance 🔧
+
+🔧 Maintenance due: Dec 20, 2024 (5 days)
+
+⏰ Updated: Dec 15, 2024 11:45
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="content-card">
+            <h2><i class="bi bi-rocket"></i> Quick Start</h2>
+            
+            <h4>1. Setup</h4>
+            <div class="code-block">
+# Ensure PHP SQLite extension is enabled
+php -m | grep sqlite
+
+# Upload asset-tracking-webhook.php to your web server
+# The database will be created automatically on first run
+            </div>
+
+            <h4>2. Configure AllCodeRelay</h4>
+            <p>Use the configuration tool to generate a QR code with your webhook URL:</p>
+            <div class="code-block">
+http://your-server/path/to/asset-tracking-webhook.php
+            </div>
+
+            <h4>3. Start Scanning</h4>
+            <p>Scan asset QR codes to get instant information about:</p>
+            <ul>
+                <li>Asset details and specifications</li>
+                <li>Current location and status</li>
+                <li>Check-out information</li>
+                <li>Maintenance schedules</li>
+            </ul>
+            
+            <div class="alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Note:</strong> The system includes sample data for immediate testing. No database setup required!
+            </div>
+        </div>
+
+        <!-- Database Schema -->
+        <div class="content-card">
+            <h2><i class="bi bi-database"></i> Database Schema</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Assets Table</h5>
+                    <ul>
+                        <li><code>asset_code</code> - Unique asset identifier (QR code content)</li>
+                        <li><code>name</code> - Asset name/description</li>
+                        <li><code>category_id</code> - Asset category</li>
+                        <li><code>serial_number</code> - Manufacturer serial number</li>
+                        <li><code>current_location_id</code> - Current location</li>
+                        <li><code>status</code> - Current status</li>
+                        <li><code>checked_out_to</code> - User who has the asset</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Supporting Tables</h5>
+                    <ul>
+                        <li><strong>Categories</strong> - Asset categorization (Computers, Tools, etc.)</li>
+                        <li><strong>Locations</strong> - Physical locations with building/floor/room</li>
+                        <li><strong>Users</strong> - Employee information</li>
+                        <li><strong>Asset Logs</strong> - Complete activity history</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Assets -->
+        <div class="content-card">
+            <h2><i class="bi bi-box"></i> Sample Assets Included</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Test Asset Codes</h5>
+                    <ul>
+                        <li><code>LAPTOP001</code> - Dell Latitude 7420 (Checked out)</li>
+                        <li><code>MONITOR002</code> - Samsung 27" Monitor (Available)</li>
+                        <li><code>DESK003</code> - Standing Desk (Available)</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>More Test Codes</h5>
+                    <ul>
+                        <li><code>DRILL004</code> - Cordless Drill (Maintenance)</li>
+                        <li><code>VAN005</code> - Delivery Van (Available)</li>
+                        <li>Plus categories, locations, and users</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Included -->
+        <div class="content-card">
+            <h2><i class="bi bi-files"></i> Files Included</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Core Files</h5>
+                    <ul>
+                        <li><code>asset-tracking-webhook.php</code> - Main webhook script</li>
+                        <li><code>asset-tracking-README.md</code> - Complete documentation</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Features</h5>
+                    <ul>
+                        <li>SQLite database (auto-created)</li>
+                        <li>Sample data included</li>
+                        <li>Complete error handling</li>
+                        <li>Production-ready code</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="content-card text-center">
+            <h2><i class="bi bi-download"></i> Get Started</h2>
+            <p>Ready to implement asset tracking with AllCodeRelay?</p>
+            <a href="../asset-tracking-webhook.php" class="btn btn-demo" download>
+                <i class="bi bi-download"></i> Download Webhook Script
+            </a>
+            <a href="../asset-tracking-README.md" class="btn btn-demo">
+                <i class="bi bi-book"></i> View Full Documentation
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <div class="text-center text-white py-4">
+            <a href="../../" class="btn btn-demo">
+                <i class="bi bi-arrow-left"></i> Back to Gallery
+            </a>
+            <a href="../../../" class="btn btn-demo">
+                <i class="bi bi-house"></i> Main Site
+            </a>
+        </div>
+    </div>
+
+    <script src="../../assets/bootstrap.bundle.min.js"></script>
+</body>
+</html>

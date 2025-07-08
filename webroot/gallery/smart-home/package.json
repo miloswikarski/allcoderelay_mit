@@ -1,0 +1,34 @@
+{
+  "name": "allcoderelay-smart-home-webhook",
+  "version": "1.0.0",
+  "description": "Smart home automation webhook for AllCodeRelay app",
+  "main": "smart-home-webhook.js",
+  "scripts": {
+    "start": "node smart-home-webhook.js",
+    "dev": "nodemon smart-home-webhook.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "smart-home",
+    "iot",
+    "webhook",
+    "allcoderelay",
+    "home-automation",
+    "mqtt",
+    "home-assistant"
+  ],
+  "author": "AllCodeRelay Gallery",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mqtt": "^5.3.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

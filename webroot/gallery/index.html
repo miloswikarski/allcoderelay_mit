@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AllCodeRelay Webhook Gallery</title>
+    <link rel="stylesheet" href="../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        .webhook-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+        
+        .webhook-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .webhook-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .webhook-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .webhook-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .tech-badge {
+            display: inline-block;
+            background: #f8f9fa;
+            color: #495057;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+            border: 1px solid #dee2e6;
+        }
+        
+        .tech-badge.php { background: #8993be; color: white; }
+        .tech-badge.nodejs { background: #68a063; color: white; }
+        .tech-badge.python { background: #3776ab; color: white; }
+        .tech-badge.n8n { background: #ea4b71; color: white; }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.25rem 0;
+            color: #666;
+        }
+        
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+        
+        .category-section {
+            margin: 3rem 0;
+        }
+        
+        .category-title {
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .btn-demo {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+        
+        .stats-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .stat-item {
+            margin: 1rem 0;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1 class="hero-title">🚀 AllCodeRelay Webhook Gallery</h1>
+            <p class="hero-subtitle">
+                Discover powerful webhook integrations for your AllCodeRelay app.<br>
+                From inventory management to smart home automation - we've got you covered!
+            </p>
+            <a href="../webhook_config.php" class="btn btn-demo btn-lg">
+                <i class="bi bi-qr-code"></i> Configure Your Webhook
+            </a>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number">8+</span>
+                        <span class="stat-label">Webhook Examples</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Technologies</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number">6</span>
+                        <span class="stat-label">Use Cases</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Open Source</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business & Enterprise Section -->
+        <div class="category-section">
+            <h2 class="category-title">🏢 Business & Enterprise</h2>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="webhook-card">
+                        <span class="webhook-icon">📦</span>
+                        <h3 class="webhook-title">Inventory Management</h3>
+                        <p class="webhook-description">
+                            Scan product barcodes to check stock levels, update inventory, and receive low stock alerts. Perfect for retail and warehouse management.
+                        </p>
+                        <div class="mb-3">
+                            <span class="tech-badge php">PHP</span>
+                            <span class="tech-badge">MySQL</span>
+                        </div>
+                        <ul class="feature-list">
+                            <li>Real-time stock checking</li>
+                            <li>Low stock alerts</li>
+                            <li>Product lookup by barcode</li>
+                            <li>Scan activity logging</li>
+                        </ul>
+                        <a href="business/inventory-management/" class="btn btn-demo">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="webhook-card">
+                        <span class="webhook-icon">🎫</span>
+                        <h3 class="webhook-title">Event Check-in</h3>
+                        <p class="webhook-description">
+                            Streamline event management with QR code-based attendee check-ins. Real-time attendance tracking and access control.
+                        </p>
+                        <div class="mb-3">
+                            <span class="tech-badge python">Python</span>
+                            <span class="tech-badge">Flask</span>
+                            <span class="tech-badge">SQLite</span>
+                        </div>
+                        <ul class="feature-list">
+                            <li>Instant attendee verification</li>
+                            <li>Multiple access levels</li>
+                            <li>Real-time statistics</li>
+                            <li>Event timing validation</li>
+                        </ul>
+                        <a href="business/event-checkin/" class="btn btn-demo">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="webhook-card">
+                        <span class="webhook-icon">🏷️</span>
+                        <h3 class="webhook-title">Asset Tracking</h3>
+                        <p class="webhook-description">
+                            Track corporate assets and equipment with QR code scanning. Monitor check-in/out status and maintenance schedules.
+                        </p>
+                        <div class="mb-3">
+                            <span class="tech-badge php">PHP</span>
+                            <span class="tech-badge">SQLite</span>
+                        </div>
+                        <ul class="feature-list">
+                            <li>Asset registration</li>
+                            <li>Location tracking</li>
+                            <li>Maintenance logs</li>
+                            <li>Check-in/out system</li>
+                        </ul>
+                        <a href="business/asset-tracking/" class="btn btn-demo">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Smart Home & IoT Section -->
+        <div class="category-section">
+            <h2 class="category-title">🏠 Smart Home & IoT</h2>
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="webhook-card">
+                        <span class="webhook-icon">🏠</span>
+                        <h3 class="webhook-title">Home Automation</h3>
+                        <p class="webhook-description">
+                            Control smart home devices with QR codes. Turn lights on/off, activate scenes, and manage IoT devices through MQTT and Home Assistant integration.
+                        </p>
+                        <div class="mb-3">
+                            <span class="tech-badge nodejs">Node.js</span>
+                            <span class="tech-badge">MQTT</span>
+                            <span class="tech-badge">Home Assistant</span>
+                        </div>
+                        <ul class="feature-list">
+                            <li>Device control (lights, switches)</li>
+                            <li>Scene activation</li>
+                            <li>MQTT integration</li>
+                            <li>Security system control</li>
+                        </ul>
+                        <a href="smart-home/home-automation/" class="btn btn-demo">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6 col-md-6">
+                    <div class="webhook-card">
+                        <span class="webhook-icon">🍽️</span>
+                        <h3 class="webhook-title">Smart Restaurant Menu</h3>
+                        <p class="webhook-description">
+                            Interactive restaurant experience with QR code menus. Get dish information, allergen details, and special offers by scanning table codes.
+                        </p>
+                        <div class="mb-3">
+                            <span class="tech-badge nodejs">Node.js</span>
+                            <span class="tech-badge">Express</span>
+                        </div>
+                        <ul class="feature-list">
+                            <li>Dynamic menu display</li>
+                            <li>Multilingual support</li>
+                            <li>Allergen information</li>
+                            <li>Daily specials</li>
+                        </ul>
+                        <a href="smart-home/restaurant-menu/" class="btn btn-demo">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Productivity & Finance Section -->
+        <div class="category-section">
+            <h2 class="category-title">💰 Productivity & Finance</h2>
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="webhook-card">
+                        <span class="webhook-icon">💰</span>
+                        <h3 class="webhook-title">Expense Tracking</h3>
+                        <p class="webhook-description">
+                            Automatically log expenses by scanning receipts. AI-powered receipt parsing with Google Sheets integration and Slack notifications.
+                        </p>
+                        <div class="mb-3">
+                            <span class="tech-badge n8n">n8n</span>
+                            <span class="tech-badge">OpenAI</span>
+                            <span class="tech-badge">Google Sheets</span>
+                        </div>
+                        <ul class="feature-list">
+                            <li>AI receipt parsing</li>
+                            <li>Automatic categorization</li>
+                            <li>Google Sheets logging</li>
+                            <li>Slack notifications</li>
+                        </ul>
+                        <a href="n8n-workflows/expense-tracking/" class="btn btn-demo">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6 col-md-6">
+                    <div class="webhook-card">
+                        <span class="webhook-icon">📱</span>
+                        <h3 class="webhook-title">Contact Sharing</h3>
+                        <p class="webhook-description">
+                            Share contact information instantly with QR codes. Automatically add contacts to address books with vCard generation.
+                        </p>
+                        <div class="mb-3">
+                            <span class="tech-badge python">Python</span>
+                            <span class="tech-badge">Flask</span>
+                        </div>
+                        <ul class="feature-list">
+                            <li>vCard generation</li>
+                            <li>Contact validation</li>
+                            <li>Bulk import support</li>
+                            <li>QR code generation</li>
+                        </ul>
+                        <a href="productivity/contact-sharing/" class="btn btn-demo">
+                            <i class="bi bi-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Getting Started Section -->
+        <div class="hero-section">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">🚀 Getting Started</h2>
+            <div class="row text-left">
+                <div class="col-md-4">
+                    <h4><i class="bi bi-1-circle"></i> Choose a Webhook</h4>
+                    <p>Browse the gallery and select a webhook that fits your use case. Each example includes complete documentation and setup instructions.</p>
+                </div>
+                <div class="col-md-4">
+                    <h4><i class="bi bi-2-circle"></i> Deploy & Configure</h4>
+                    <p>Follow the setup guide to deploy the webhook on your server. Configure the required services and credentials.</p>
+                </div>
+                <div class="col-md-4">
+                    <h4><i class="bi bi-3-circle"></i> Connect AllCodeRelay</h4>
+                    <p>Use our configuration tool to generate a QR code and connect your AllCodeRelay app to the webhook.</p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="../webhook_config.php" class="btn btn-demo btn-lg me-3">
+                    <i class="bi bi-gear"></i> Configure Webhook
+                </a>
+                <a href="README.md" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-book"></i> Read Documentation
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-white py-4">
+            <p>&copy; 2024 AllCodeRelay Webhook Gallery. Open source examples for educational and commercial use.</p>
+            <p>
+                <a href="https://grapph.com/allcoderelay/" class="text-white me-3" target="_blank">
+                    <i class="bi bi-globe"></i> AllCodeRelay Website
+                </a>
+                <a href="../" class="text-white">
+                    <i class="bi bi-house"></i> Back to Main Site
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script src="../assets/bootstrap.bundle.min.js"></script>
+</body>
+</html>

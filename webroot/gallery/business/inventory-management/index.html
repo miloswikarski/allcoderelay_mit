@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📦 Inventory Management Webhook - AllCodeRelay Gallery</title>
+    <link rel="stylesheet" href="../../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .tech-badge {
+            display: inline-block;
+            background: #8993be;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .alert-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .screenshot {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1>📦 Inventory Management Webhook</h1>
+            <p class="lead">
+                A comprehensive PHP webhook for managing inventory through barcode scanning with AllCodeRelay.
+            </p>
+            <div class="mb-3">
+                <span class="tech-badge">PHP</span>
+                <span class="tech-badge">MySQL</span>
+                <span class="tech-badge">SQLite</span>
+            </div>
+            <a href="../../../webhook_config.php" class="btn btn-demo btn-lg">
+                <i class="bi bi-qr-code"></i> Configure Webhook
+            </a>
+            <a href="../inventory-management-README.md" class="btn btn-demo btn-lg">
+                <i class="bi bi-book"></i> Full Documentation
+            </a>
+        </div>
+
+        <!-- Features Section -->
+        <div class="content-card">
+            <h2><i class="bi bi-star"></i> Key Features</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Product Lookup</strong> - Instantly find products by scanning barcodes</li>
+                        <li><strong>Stock Monitoring</strong> - Real-time stock level checking with visual indicators</li>
+                        <li><strong>Low Stock Alerts</strong> - Automatic notifications when inventory runs low</li>
+                        <li><strong>Scan Logging</strong> - Track all scanning activity with timestamps</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Category Management</strong> - Organize products by categories</li>
+                        <li><strong>Stock Movement Tracking</strong> - Monitor inventory changes over time</li>
+                        <li><strong>Location Tracking</strong> - Track where products are stored</li>
+                        <li><strong>Supplier Management</strong> - Maintain supplier information</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Examples -->
+        <div class="content-card">
+            <h2><i class="bi bi-phone"></i> Usage Examples</h2>
+            
+            <h4>📱 Scanning a Product Barcode</h4>
+            <p>When you scan a product barcode, you'll get a response like:</p>
+            <div class="code-block">
+📦 Wireless Mouse
+
+Category: Electronics
+Stock: 25 units 🟢
+Price: $29.99
+Location: A1-B2
+Updated: Dec 15, 2024
+            </div>
+
+            <h4>📊 Stock Status Indicators</h4>
+            <ul>
+                <li>🟢 <strong>Good Stock</strong> - Above minimum level</li>
+                <li>🟡 <strong>Low Stock</strong> - At or below minimum level</li>
+                <li>🔴 <strong>Out of Stock</strong> - Zero quantity</li>
+            </ul>
+
+            <h4>❓ Unknown Product</h4>
+            <p>For unrecognized barcodes:</p>
+            <div class="code-block">
+⚠️ Product not found!
+
+Barcode: 9876543210987
+
+Would you like to add this product to inventory?
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="content-card">
+            <h2><i class="bi bi-rocket"></i> Quick Start</h2>
+            
+            <h4>1. Database Setup</h4>
+            <div class="code-block">
+# Create database and user
+mysql -u root -p &lt; setup.sql
+            </div>
+
+            <h4>2. Configure Webhook</h4>
+            <p>Edit <code>inventory-webhook.php</code> and update the database credentials:</p>
+            <div class="code-block">
+$db_config = [
+    'host' => 'localhost',
+    'dbname' => 'inventory_db',
+    'username' => 'inventory_user',
+    'password' => 'your_actual_password'
+];
+            </div>
+
+            <h4>3. Deploy Webhook</h4>
+            <p>Upload <code>inventory-webhook.php</code> to your web server and note the URL.</p>
+
+            <h4>4. Configure AllCodeRelay</h4>
+            <p>Use the configuration tool to generate a QR code with your webhook URL.</p>
+            
+            <div class="alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Note:</strong> Make sure your web server has PHP and MySQL/MariaDB installed and configured.
+            </div>
+        </div>
+
+        <!-- Database Schema -->
+        <div class="content-card">
+            <h2><i class="bi bi-database"></i> Database Schema</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Products Table</h5>
+                    <ul>
+                        <li><code>barcode</code> - Unique product identifier</li>
+                        <li><code>name</code> - Product name</li>
+                        <li><code>stock_quantity</code> - Current stock level</li>
+                        <li><code>min_stock_level</code> - Minimum stock threshold</li>
+                        <li><code>price</code> - Selling price</li>
+                        <li><code>location</code> - Storage location</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Additional Tables</h5>
+                    <ul>
+                        <li><strong>Categories</strong> - Product categorization</li>
+                        <li><strong>Scan Logs</strong> - Activity tracking</li>
+                        <li><strong>Stock Movements</strong> - Inventory changes</li>
+                        <li><strong>Suppliers</strong> - Vendor information</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Included -->
+        <div class="content-card">
+            <h2><i class="bi bi-files"></i> Files Included</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Core Files</h5>
+                    <ul>
+                        <li><code>inventory-webhook.php</code> - Main webhook script</li>
+                        <li><code>setup.sql</code> - Database schema and sample data</li>
+                        <li><code>inventory-management-README.md</code> - Complete documentation</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Features</h5>
+                    <ul>
+                        <li>Complete error handling</li>
+                        <li>Sample data included</li>
+                        <li>Production-ready code</li>
+                        <li>Security best practices</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="content-card text-center">
+            <h2><i class="bi bi-download"></i> Get Started</h2>
+            <p>Ready to implement inventory management with AllCodeRelay?</p>
+            <a href="../inventory-webhook.php" class="btn btn-demo" download>
+                <i class="bi bi-download"></i> Download Webhook Script
+            </a>
+            <a href="../setup.sql" class="btn btn-demo" download>
+                <i class="bi bi-database"></i> Download Database Schema
+            </a>
+            <a href="../inventory-management-README.md" class="btn btn-demo">
+                <i class="bi bi-book"></i> View Full Documentation
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <div class="text-center text-white py-4">
+            <a href="../../" class="btn btn-demo">
+                <i class="bi bi-arrow-left"></i> Back to Gallery
+            </a>
+            <a href="../../../" class="btn btn-demo">
+                <i class="bi bi-house"></i> Main Site
+            </a>
+        </div>
+    </div>
+
+    <script src="../../assets/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Expense Tracking n8n Workflow - AllCodeRelay Gallery</title>
+    <link rel="stylesheet" href="../../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .tech-badge {
+            display: inline-block;
+            background: #ea4b71;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+        }
+        
+        .tech-badge.openai { background: #10a37f; }
+        .tech-badge.sheets { background: #34a853; }
+        .tech-badge.slack { background: #4a154b; }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .alert-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .workflow-step {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-left: 4px solid #ea4b71;
+        }
+        
+        .step-number {
+            background: #ea4b71;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1>💰 Expense Tracking n8n Workflow</h1>
+            <p class="lead">
+                Automatically track expenses by scanning receipts and invoices with AllCodeRelay! AI-powered n8n workflow with Google Sheets and Slack integration.
+            </p>
+            <div class="mb-3">
+                <span class="tech-badge">n8n</span>
+                <span class="tech-badge openai">OpenAI</span>
+                <span class="tech-badge sheets">Google Sheets</span>
+                <span class="tech-badge slack">Slack</span>
+            </div>
+            <a href="../../../webhook_config.php" class="btn btn-demo btn-lg">
+                <i class="bi bi-qr-code"></i> Configure Webhook
+            </a>
+            <a href="../expense-tracker-README.md" class="btn btn-demo btn-lg">
+                <i class="bi bi-book"></i> Full Documentation
+            </a>
+        </div>
+
+        <!-- Features Section -->
+        <div class="content-card">
+            <h2><i class="bi bi-star"></i> Key Features</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Receipt Recognition</strong> - Automatically detects receipt URLs and QR codes</li>
+                        <li><strong>AI-Powered Parsing</strong> - Uses OpenAI to extract expense details</li>
+                        <li><strong>Google Sheets Integration</strong> - Automatically logs expenses to spreadsheet</li>
+                        <li><strong>Slack Notifications</strong> - Real-time expense alerts</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Data Validation</strong> - Ensures expense data quality</li>
+                        <li><strong>Error Handling</strong> - Graceful handling of invalid receipts</li>
+                        <li><strong>Visual Workflow</strong> - Easy to understand and modify in n8n</li>
+                        <li><strong>Extensible</strong> - Add more integrations and features</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="content-card">
+            <h2><i class="bi bi-gear"></i> How It Works</h2>
+            
+            <div class="workflow-step">
+                <span class="step-number">1</span>
+                <strong>Webhook Receives Scan</strong> - AllCodeRelay sends scanned code to n8n webhook
+            </div>
+            
+            <div class="workflow-step">
+                <span class="step-number">2</span>
+                <strong>Data Extraction</strong> - Extracts code content and timestamp
+            </div>
+            
+            <div class="workflow-step">
+                <span class="step-number">3</span>
+                <strong>Receipt Detection</strong> - Checks if code looks like a receipt/invoice
+            </div>
+            
+            <div class="workflow-step">
+                <span class="step-number">4</span>
+                <strong>Data Fetching</strong> - Downloads receipt data if it's a URL
+            </div>
+            
+            <div class="workflow-step">
+                <span class="step-number">5</span>
+                <strong>AI Parsing</strong> - OpenAI extracts structured expense data
+            </div>
+            
+            <div class="workflow-step">
+                <span class="step-number">6</span>
+                <strong>Validation</strong> - Ensures required fields are present
+            </div>
+            
+            <div class="workflow-step">
+                <span class="step-number">7</span>
+                <strong>Logging</strong> - Saves to Google Sheets and sends Slack notification
+            </div>
+            
+            <div class="workflow-step">
+                <span class="step-number">8</span>
+                <strong>Response</strong> - Returns formatted response to AllCodeRelay
+            </div>
+        </div>
+
+        <!-- Supported Receipt Types -->
+        <div class="content-card">
+            <h2><i class="bi bi-receipt"></i> Supported Receipt Types</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>📱 QR Codes</h5>
+                    <p>Receipt QR codes with embedded data from:</p>
+                    <ul>
+                        <li>Digital receipts</li>
+                        <li>E-commerce platforms</li>
+                        <li>Point-of-sale systems</li>
+                        <li>Mobile payment apps</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>🔗 URLs</h5>
+                    <p>Links to digital receipts from:</p>
+                    <ul>
+                        <li>Online invoice pages</li>
+                        <li>Receipt scanning apps</li>
+                        <li>E-commerce order confirmations</li>
+                        <li>Digital wallet receipts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Examples -->
+        <div class="content-card">
+            <h2><i class="bi bi-phone"></i> Usage Examples</h2>
+            
+            <h4>💰 Successful Expense Logging</h4>
+            <p>When scanning a receipt QR code:</p>
+            <div class="code-block">
+💰 Expense Logged!
+
+🏪 Starbucks Coffee
+💵 $12.45 USD
+📅 2024-12-15
+🏷️ Food & Beverages
+
+✅ Added to expense tracker
+            </div>
+
+            <h4>❓ Not a Receipt</h4>
+            <p>For non-receipt codes:</p>
+            <div class="code-block">
+❓ Not a Receipt
+
+This doesn't appear to be a receipt or invoice.
+
+Please scan:
+• Receipt QR codes
+• Invoice URLs
+• Digital receipt links
+            </div>
+
+            <h4>❌ Processing Error</h4>
+            <p>If AI can't parse the receipt:</p>
+            <div class="code-block">
+❌ Invalid Receipt
+
+Missing required fields: merchant, amount
+
+Please scan a valid receipt or invoice.
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="content-card">
+            <h2><i class="bi bi-rocket"></i> Quick Start</h2>
+            
+            <h4>1. Import Workflow</h4>
+            <ol>
+                <li>Download <code>expense-tracker.json</code></li>
+                <li>Open your n8n instance</li>
+                <li>Go to <strong>Workflows</strong> → <strong>Import from File</strong></li>
+                <li>Select the downloaded JSON file</li>
+                <li>Click <strong>Import</strong></li>
+            </ol>
+
+            <h4>2. Configure Credentials</h4>
+            <p>Set up the required service connections:</p>
+            <ul>
+                <li><strong>OpenAI API</strong> - For receipt parsing</li>
+                <li><strong>Google Sheets OAuth2 API</strong> - For expense logging</li>
+                <li><strong>Slack OAuth2 API</strong> - For notifications (optional)</li>
+            </ul>
+
+            <h4>3. Configure Google Sheets</h4>
+            <ol>
+                <li>Create a new Google Spreadsheet</li>
+                <li>Name the first sheet "Expenses"</li>
+                <li>Add column headers: Date, Merchant, Amount, Currency, Category, Items, Tax, Payment Method, Scan Time, Original Code</li>
+                <li>Copy the spreadsheet ID from the URL</li>
+                <li>Update the "Log to Google Sheets" node with your spreadsheet ID</li>
+            </ol>
+
+            <h4>4. Activate Workflow</h4>
+            <ol>
+                <li>Click <strong>Active</strong> toggle to enable the workflow</li>
+                <li>Note the webhook URL from the "Expense Webhook" node</li>
+                <li>Configure AllCodeRelay with this webhook URL</li>
+            </ol>
+            
+            <div class="alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Note:</strong> You'll need an OpenAI API key for the AI parsing functionality. The workflow includes detailed setup instructions.
+            </div>
+        </div>
+
+        <!-- Google Sheets Output -->
+        <div class="content-card">
+            <h2><i class="bi bi-table"></i> Google Sheets Output</h2>
+            <p>The workflow creates entries with these fields:</p>
+            
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Date</td>
+                            <td>Transaction date</td>
+                            <td>2024-12-15</td>
+                        </tr>
+                        <tr>
+                            <td>Merchant</td>
+                            <td>Store/vendor name</td>
+                            <td>Starbucks Coffee</td>
+                        </tr>
+                        <tr>
+                            <td>Amount</td>
+                            <td>Total amount</td>
+                            <td>12.45</td>
+                        </tr>
+                        <tr>
+                            <td>Currency</td>
+                            <td>Currency code</td>
+                            <td>USD</td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td>Expense category</td>
+                            <td>Food & Beverages</td>
+                        </tr>
+                        <tr>
+                            <td>Items</td>
+                            <td>Purchased items</td>
+                            <td>Coffee, Muffin</td>
+                        </tr>
+                        <tr>
+                            <td>Tax</td>
+                            <td>Tax amount</td>
+                            <td>1.12</td>
+                        </tr>
+                        <tr>
+                            <td>Payment Method</td>
+                            <td>How paid</td>
+                            <td>Credit Card</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Configuration Options -->
+        <div class="content-card">
+            <h2><i class="bi bi-sliders"></i> Configuration Options</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>🤖 AI Model Settings</h5>
+                    <p>In the "AI Receipt Parser" node, you can adjust:</p>
+                    <div class="code-block">
+{
+  "model": "gpt-4o-mini",
+  "temperature": 0.1,
+  "max_tokens": 1000
+}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>💬 Slack Channel</h5>
+                    <p>Update the Slack notification node to post to your preferred channel:</p>
+                    <div class="code-block">
+{
+  "channel": "#expenses",
+  "text": "Custom message format..."
+}
+                    </div>
+                </div>
+            </div>
+            
+            <h5>🏷️ Expense Categories</h5>
+            <p>The AI automatically categorizes expenses using these common categories:</p>
+            <ul class="list-inline">
+                <li class="list-inline-item"><span class="badge bg-secondary">Food & Beverages</span></li>
+                <li class="list-inline-item"><span class="badge bg-secondary">Transportation</span></li>
+                <li class="list-inline-item"><span class="badge bg-secondary">Office Supplies</span></li>
+                <li class="list-inline-item"><span class="badge bg-secondary">Entertainment</span></li>
+                <li class="list-inline-item"><span class="badge bg-secondary">Travel</span></li>
+                <li class="list-inline-item"><span class="badge bg-secondary">Utilities</span></li>
+                <li class="list-inline-item"><span class="badge bg-secondary">Healthcare</span></li>
+                <li class="list-inline-item"><span class="badge bg-secondary">Shopping</span></li>
+            </ul>
+        </div>
+
+        <!-- Files Included -->
+        <div class="content-card">
+            <h2><i class="bi bi-files"></i> Files Included</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Core Files</h5>
+                    <ul>
+                        <li><code>expense-tracker.json</code> - Complete n8n workflow</li>
+                        <li><code>expense-tracker-README.md</code> - Complete documentation</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Features</h5>
+                    <ul>
+                        <li>Visual workflow editor</li>
+                        <li>AI-powered data extraction</li>
+                        <li>Multiple integration options</li>
+                        <li>Error handling and validation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="content-card text-center">
+            <h2><i class="bi bi-download"></i> Get Started</h2>
+            <p>Ready to automate expense tracking with AllCodeRelay and n8n?</p>
+            <a href="../expense-tracker.json" class="btn btn-demo" download>
+                <i class="bi bi-download"></i> Download n8n Workflow
+            </a>
+            <a href="../expense-tracker-README.md" class="btn btn-demo">
+                <i class="bi bi-book"></i> View Full Documentation
+            </a>
+            <a href="https://n8n.io" class="btn btn-demo" target="_blank">
+                <i class="bi bi-box-arrow-up-right"></i> Get n8n
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <div class="text-center text-white py-4">
+            <a href="../../" class="btn btn-demo">
+                <i class="bi bi-arrow-left"></i> Back to Gallery
+            </a>
+            <a href="../../../" class="btn btn-demo">
+                <i class="bi bi-house"></i> Main Site
+            </a>
+        </div>
+    </div>
+
+    <script src="../../assets/bootstrap.bundle.min.js"></script>
+</body>
+</html>

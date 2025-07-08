@@ -1,0 +1,31 @@
+# AllCodeRelay Contact Sharing Webhook Dependencies
+
+# Core Flask framework
+Flask==3.0.0
+Werkzeug==3.0.1
+
+# QR Code generation
+qrcode[pil]==7.4.2
+Pillow==10.1.0
+
+# vCard parsing and generation
+vobject==0.9.6.1
+
+# Environment configuration
+python-dotenv==1.0.0
+
+# Date/time handling (built into Python)
+# JSON handling (built into Python)
+# Logging (built into Python)
+
+# Optional: For production deployment
+gunicorn==21.2.0
+
+# Optional: For enhanced security
+cryptography==41.0.8
+
+# Development dependencies (optional)
+pytest==7.4.3
+pytest-flask==1.3.0
+black==23.11.0
+flake8==6.1.0

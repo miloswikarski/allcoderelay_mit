@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍽️ Smart Restaurant Menu Webhook - AllCodeRelay Gallery</title>
+    <link rel="stylesheet" href="../../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .tech-badge {
+            display: inline-block;
+            background: #68a063;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .alert-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .qr-type-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .dietary-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin: 0.25rem;
+        }
+        
+        .dietary-vegetarian { background: #e8f5e8; color: #2e7d32; }
+        .dietary-vegan { background: #e8f5e8; color: #1b5e20; }
+        .dietary-gluten-free { background: #fff3e0; color: #ef6c00; }
+        .dietary-keto { background: #f3e5f5; color: #7b1fa2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1>🍽️ Smart Restaurant Menu Webhook</h1>
+            <p class="lead">
+                Transform your restaurant experience with interactive QR code menus! Node.js webhook providing detailed dish information and personalized dining experiences.
+            </p>
+            <div class="mb-3">
+                <span class="tech-badge">Node.js</span>
+                <span class="tech-badge">Express</span>
+                <span class="tech-badge">JSON</span>
+            </div>
+            <a href="../../../webhook_config.php" class="btn btn-demo btn-lg">
+                <i class="bi bi-qr-code"></i> Configure Webhook
+            </a>
+            <a href="../restaurant-menu-README.md" class="btn btn-demo btn-lg">
+                <i class="bi bi-book"></i> Full Documentation
+            </a>
+        </div>
+
+        <!-- Features Section -->
+        <div class="content-card">
+            <h2><i class="bi bi-star"></i> Key Features</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Interactive Menus</strong> - Detailed dish information with ingredients and nutrition</li>
+                        <li><strong>QR Code Types</strong> - Table menus, individual dishes, categories, and specials</li>
+                        <li><strong>Allergen Alerts</strong> - Clear allergen and dietary information</li>
+                        <li><strong>Nutritional Info</strong> - Calories, macros, and dietary classifications</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Multilingual Ready</strong> - Easy to extend for multiple languages</li>
+                        <li><strong>Daily Specials</strong> - Dynamic special offers and promotions</li>
+                        <li><strong>Server Integration</strong> - Table assignments and service information</li>
+                        <li><strong>Mobile Optimized</strong> - Perfect for smartphone scanning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Code Types -->
+        <div class="content-card">
+            <h2><i class="bi bi-qr-code"></i> QR Code Types</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="qr-type-card">
+                        <h5>📍 Table Codes: <code>TABLE_XX</code></h5>
+                        <p>Show table-specific welcome and menu overview with today's specials and server information.</p>
+                    </div>
+                    
+                    <div class="qr-type-card">
+                        <h5>🍽️ Dish Codes: <code>DISH_XXX</code></h5>
+                        <p>Detailed dish information including ingredients, allergens, nutrition, and preparation time.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="qr-type-card">
+                        <h5>📋 Category Codes: <code>CAT_XXXXX</code></h5>
+                        <p>Category menu listings with all dishes in appetizers, mains, desserts, etc.</p>
+                    </div>
+                    
+                    <div class="qr-type-card">
+                        <h5>⭐ Special Codes: <code>SPECIAL_XXX</code></h5>
+                        <p>Special offers and promotions with pricing, conditions, and validity periods.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dietary Classifications -->
+        <div class="content-card">
+            <h2><i class="bi bi-heart"></i> Dietary Classifications</h2>
+            <p>The system supports comprehensive dietary indicators:</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="dietary-badge dietary-vegetarian">🥬 Vegetarian</span> - No meat or fish<br>
+                    <span class="dietary-badge dietary-vegan">🌱 Vegan</span> - No animal products<br>
+                    <span class="dietary-badge dietary-gluten-free">🚫🌾 Gluten-Free</span> - No gluten-containing ingredients
+                </div>
+                <div class="col-md-6">
+                    <span class="dietary-badge dietary-gluten-free">🚫🥛 Dairy-Free</span> - No dairy products<br>
+                    <span class="dietary-badge dietary-keto">🥑 Keto</span> - Low-carb, high-fat<br>
+                    <span class="dietary-badge dietary-vegetarian">🥗 Low-Carb</span> - Reduced carbohydrate content
+                </div>
+            </div>
+            
+            <h5 class="mt-3">🌶️ Spice Level System</h5>
+            <p>Rate dishes from 1-5 chili peppers:</p>
+            <ul>
+                <li>🌶️ (1) - Mild</li>
+                <li>🌶️🌶️ (2) - Medium</li>
+                <li>🌶️🌶️🌶️ (3) - Hot</li>
+                <li>🌶️🌶️🌶️🌶️ (4) - Very Hot</li>
+                <li>🌶️🌶️🌶️🌶️🌶️ (5) - Extremely Hot</li>
+            </ul>
+        </div>
+
+        <!-- Usage Examples -->
+        <div class="content-card">
+            <h2><i class="bi bi-phone"></i> Usage Examples</h2>
+            
+            <h4>📍 Table Menu (TABLE_05)</h4>
+            <div class="code-block">
+🍽️ Bella Vista Restaurant
+📍 Table 5
+
+Welcome to Bella Vista! Scan dish QR codes for detailed information.
+
+⭐ Today's Specials:
+• Happy Hour Special - $15.99
+
+📱 Scan dish QR codes for details
+🔔 Call server: Press button on table
+💳 Payment: Card/Cash/Mobile
+
+👨‍🍳 Your server: Sarah
+            </div>
+
+            <h4>🍽️ Detailed Dish (DISH_101)</h4>
+            <div class="code-block">
+🍽️ Grilled Salmon
+
+💰 Price: $24.99
+⏱️ Prep time: 20-25 min
+
+📝 Fresh Atlantic salmon with seasonal vegetables
+
+🥘 Ingredients:
+Salmon, Asparagus, Lemon, Herbs
+
+⚠️ Allergens: Fish
+
+📊 Nutrition (per serving):
+• Calories: 420
+• Protein: 35g
+• Carbs: 8g
+• Fat: 28g
+
+🏷️ Dietary: 🚫🌾 gluten-free 🥑 keto
+
+✅ Available now
+            </div>
+
+            <h4>⭐ Special Offer (SPECIAL_001)</h4>
+            <div class="code-block">
+⭐ Happy Hour Special
+
+💰 Special Price: $15.99 (Save $7.00!)
+
+📝 Any appetizer + drink combo
+
+⏰ Valid until: 2024-12-31
+📋 Conditions: Available 4-6 PM weekdays
+
+🍽️ Includes:
+• Choice of appetizer
+• House wine or beer
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="content-card">
+            <h2><i class="bi bi-rocket"></i> Quick Start</h2>
+            
+            <h4>1. Installation</h4>
+            <div class="code-block">
+# Install dependencies
+npm install
+
+# Copy environment configuration
+cp .env.example .env
+            </div>
+
+            <h4>2. Configuration</h4>
+            <p>Edit <code>.env</code> file with your settings:</p>
+            <div class="code-block">
+PORT=3001
+RESTAURANT_NAME="Your Restaurant Name"
+CURRENCY=USD
+TIMEZONE=America/New_York
+            </div>
+
+            <h4>3. Customize Menu Data</h4>
+            <p>Edit <code>menu-data.json</code> and <code>restaurant-config.json</code> with your actual menu items, or let the system create sample data on first run.</p>
+
+            <h4>4. Start the Server</h4>
+            <div class="code-block">
+# Production
+npm start
+
+# Development (with auto-reload)
+npm run dev
+            </div>
+            
+            <div class="alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Note:</strong> The system includes sample menu data for immediate testing. Customize the JSON files with your actual menu.
+            </div>
+        </div>
+
+        <!-- Menu Data Structure -->
+        <div class="content-card">
+            <h2><i class="bi bi-database"></i> Menu Data Structure</h2>
+            
+            <h5>🍽️ Dish Object Example</h5>
+            <div class="code-block">
+{
+  "id": "001",
+  "name": "Grilled Salmon",
+  "price": "24.99",
+  "description": "Fresh Atlantic salmon with seasonal vegetables",
+  "ingredients": ["Salmon", "Asparagus", "Lemon", "Herbs"],
+  "allergens": ["Fish"],
+  "prepTime": "20-25",
+  "available": true,
+  "dietary": ["gluten-free", "keto"],
+  "spiceLevel": 0,
+  "nutrition": {
+    "calories": 420,
+    "protein": 35,
+    "carbs": 8,
+    "fat": 28
+  }
+}
+            </div>
+
+            <h5>📋 Category Structure</h5>
+            <div class="code-block">
+{
+  "appetizers": {
+    "name": "Appetizers",
+    "description": "Start your meal with our delicious appetizers",
+    "dishes": [...]
+  }
+}
+            </div>
+        </div>
+
+        <!-- API Endpoints -->
+        <div class="content-card">
+            <h2><i class="bi bi-api"></i> API Endpoints</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Webhook Endpoint</h5>
+                    <ul>
+                        <li><code>POST /webhook</code> - Main AllCodeRelay webhook</li>
+                        <li><strong>Body:</strong> <code>{"code": "TABLE_01"}</code></li>
+                    </ul>
+                    
+                    <h5>Admin Endpoints</h5>
+                    <ul>
+                        <li><code>GET /admin/menu</code> - Get complete menu data</li>
+                        <li><code>POST /admin/menu/reload</code> - Reload menu from files</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Utility Endpoints</h5>
+                    <ul>
+                        <li><code>GET /health</code> - Health check and status</li>
+                    </ul>
+                    
+                    <h5>Health Check Response</h5>
+                    <div class="code-block">
+{
+  "status": "ok",
+  "restaurant": "Bella Vista Restaurant",
+  "menuItems": 5,
+  "timestamp": "2024-12-15T10:30:00.000Z"
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Included -->
+        <div class="content-card">
+            <h2><i class="bi bi-files"></i> Files Included</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Core Files</h5>
+                    <ul>
+                        <li><code>restaurant-menu-webhook.js</code> - Main webhook script</li>
+                        <li><code>restaurant-package.json</code> - Node.js dependencies</li>
+                        <li><code>.env.example</code> - Environment configuration</li>
+                        <li><code>restaurant-menu-README.md</code> - Complete documentation</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Features</h5>
+                    <ul>
+                        <li>Sample menu data included</li>
+                        <li>Configurable restaurant settings</li>
+                        <li>Dynamic menu updates</li>
+                        <li>Production-ready with PM2 support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="content-card text-center">
+            <h2><i class="bi bi-download"></i> Get Started</h2>
+            <p>Ready to create an interactive restaurant menu with AllCodeRelay?</p>
+            <a href="../restaurant-menu-webhook.js" class="btn btn-demo" download>
+                <i class="bi bi-download"></i> Download Webhook Script
+            </a>
+            <a href="../restaurant-package.json" class="btn btn-demo" download>
+                <i class="bi bi-list-check"></i> Download Package.json
+            </a>
+            <a href="../.env.example" class="btn btn-demo" download>
+                <i class="bi bi-gear"></i> Download Config Template
+            </a>
+            <a href="../restaurant-menu-README.md" class="btn btn-demo">
+                <i class="bi bi-book"></i> View Full Documentation
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <div class="text-center text-white py-4">
+            <a href="../../" class="btn btn-demo">
+                <i class="bi bi-arrow-left"></i> Back to Gallery
+            </a>
+            <a href="../../../" class="btn btn-demo">
+                <i class="bi bi-house"></i> Main Site
+            </a>
+        </div>
+    </div>
+
+    <script src="../../assets/bootstrap.bundle.min.js"></script>
+</body>
+</html>

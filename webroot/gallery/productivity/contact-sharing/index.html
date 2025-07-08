@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📱 Contact Sharing Webhook - AllCodeRelay Gallery</title>
+    <link rel="stylesheet" href="../../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .tech-badge {
+            display: inline-block;
+            background: #3776ab;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .alert-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .format-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-left: 4px solid #3776ab;
+        }
+        
+        .format-number {
+            background: #3776ab;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1>📱 Contact Sharing Webhook</h1>
+            <p class="lead">
+                Share contact information instantly with QR codes! Python Flask webhook with support for vCard, JSON, and custom formats.
+            </p>
+            <div class="mb-3">
+                <span class="tech-badge">Python</span>
+                <span class="tech-badge">Flask</span>
+                <span class="tech-badge">vCard</span>
+            </div>
+            <a href="../../../webhook_config.php" class="btn btn-demo btn-lg">
+                <i class="bi bi-qr-code"></i> Configure Webhook
+            </a>
+            <a href="../contact-sharing-README.md" class="btn btn-demo btn-lg">
+                <i class="bi bi-book"></i> Full Documentation
+            </a>
+        </div>
+
+        <!-- Features Section -->
+        <div class="content-card">
+            <h2><i class="bi bi-star"></i> Key Features</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Multiple Formats</strong> - vCard, JSON, URL, and custom pipe-delimited formats</li>
+                        <li><strong>vCard Support</strong> - Full vCard 3.0/4.0 parsing and generation</li>
+                        <li><strong>Contact Validation</strong> - Automatic data validation and formatting</li>
+                        <li><strong>QR Code Generation</strong> - Create QR codes for any contact</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Rich Display</strong> - Formatted contact information with icons</li>
+                        <li><strong>Activity Logging</strong> - Track contact sharing activity</li>
+                        <li><strong>Privacy Focused</strong> - No unnecessary data storage</li>
+                        <li><strong>Mobile Optimized</strong> - Perfect for smartphone workflows</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Supported Contact Formats -->
+        <div class="content-card">
+            <h2><i class="bi bi-file-earmark-text"></i> Supported Contact Formats</h2>
+            
+            <div class="format-card">
+                <span class="format-number">1</span>
+                <strong>vCard Format</strong> - Standard vCard format (most compatible)
+                <div class="code-block mt-2">
+BEGIN:VCARD
+VERSION:3.0
+FN:John Smith
+N:Smith;John;;;
+ORG:Acme Corporation
+TITLE:Software Engineer
+TEL;TYPE=VOICE:+1-555-123-4567
+EMAIL;TYPE=INTERNET:john.smith@acme.com
+URL:https://johnsmith.dev
+END:VCARD
+                </div>
+            </div>
+
+            <div class="format-card">
+                <span class="format-number">2</span>
+                <strong>JSON Format</strong> - Structured JSON contact data
+                <div class="code-block mt-2">
+{
+  "name": "John Smith",
+  "company": "Acme Corporation",
+  "title": "Software Engineer",
+  "phone": "+1-555-123-4567",
+  "email": "john.smith@acme.com",
+  "website": "https://johnsmith.dev"
+}
+                </div>
+            </div>
+
+            <div class="format-card">
+                <span class="format-number">3</span>
+                <strong>Pipe-Delimited Format</strong> - Simple format: NAME|PHONE|EMAIL|COMPANY
+                <div class="code-block mt-2">
+John Smith|+1-555-123-4567|john.smith@acme.com|Acme Corporation
+                </div>
+            </div>
+
+            <div class="format-card">
+                <span class="format-number">4</span>
+                <strong>Contact URLs</strong> - Links to contact sharing services
+                <div class="code-block mt-2">
+https://contacts.example.com/share/john-smith
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Examples -->
+        <div class="content-card">
+            <h2><i class="bi bi-phone"></i> Usage Examples</h2>
+            
+            <h4>👤 vCard Contact</h4>
+            <p>When scanning a vCard QR code:</p>
+            <div class="code-block">
+👤 John Smith
+
+🏢 Software Engineer at Acme Corporation
+
+📱 Mobile: +1-555-123-4567
+📧 Email: john.smith@acme.com
+🌐 Website: https://johnsmith.dev
+
+✅ Contact information scanned successfully!
+📱 Save to your contacts app
+            </div>
+
+            <h4>📋 JSON Contact</h4>
+            <p>For JSON format contacts:</p>
+            <div class="code-block">
+👤 Sarah Johnson
+
+🏢 Marketing Director at TechCorp
+
+📞 Phone: +1-555-987-6543
+📧 Email: sarah.j@techcorp.com
+📍 Address: 123 Business St, City, State
+
+📝 Notes: Met at Tech Conference 2024
+
+✅ Contact information scanned successfully!
+📱 Save to your contacts app
+            </div>
+
+            <h4>❓ Unknown Format</h4>
+            <p>For unrecognized QR codes:</p>
+            <div class="code-block">
+❓ Unknown Contact Format
+
+This QR code is not recognized as a contact.
+
+Supported formats:
+• vCard (BEGIN:VCARD)
+• Contact URLs
+• JSON contact data
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="content-card">
+            <h2><i class="bi bi-rocket"></i> Quick Start</h2>
+            
+            <h4>1. Installation</h4>
+            <div class="code-block">
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Copy environment configuration
+cp .env.example .env
+            </div>
+
+            <h4>2. Configuration</h4>
+            <p>Edit <code>.env</code> file with your settings:</p>
+            <div class="code-block">
+FLASK_ENV=development
+SECRET_KEY=your-super-secret-key
+PORT=5001
+            </div>
+
+            <h4>3. Start the Server</h4>
+            <div class="code-block">
+# Development mode
+python contact-sharing-webhook.py
+
+# Production mode with Gunicorn
+gunicorn -w 4 -b 0.0.0.0:5001 contact-sharing-webhook:app
+            </div>
+
+            <h4>4. Configure AllCodeRelay</h4>
+            <p>Use the configuration tool to generate a QR code with your webhook URL:</p>
+            <div class="code-block">
+http://your-server:5001/webhook
+            </div>
+            
+            <div class="alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Note:</strong> The webhook processes contacts in memory only - no database setup required for basic functionality.
+            </div>
+        </div>
+
+        <!-- API Endpoints -->
+        <div class="content-card">
+            <h2><i class="bi bi-api"></i> API Endpoints</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Webhook Endpoint</h5>
+                    <ul>
+                        <li><code>POST /webhook</code> - Main AllCodeRelay webhook</li>
+                        <li><strong>Body:</strong> <code>{"code": "BEGIN:VCARD..."}</code></li>
+                    </ul>
+                    
+                    <h5>Utility Endpoints</h5>
+                    <ul>
+                        <li><code>POST /generate-vcard</code> - Generate vCard from JSON data</li>
+                        <li><code>POST /generate-qr</code> - Generate QR code for contact data</li>
+                        <li><code>GET /health</code> - Health check and status</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Generate vCard Example</h5>
+                    <div class="code-block">
+curl -X POST http://localhost:5001/generate-vcard \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Smith",
+    "phone": "+1-555-123-4567",
+    "email": "john@example.com",
+    "company": "Acme Corp"
+  }'
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Data Structure -->
+        <div class="content-card">
+            <h2><i class="bi bi-database"></i> Contact Data Structure</h2>
+            
+            <h5>📋 Complete Contact Object</h5>
+            <div class="code-block">
+contact = {
+    'name': 'John Smith',
+    'phones': [
+        {'type': 'Mobile', 'number': '+1-555-123-4567'},
+        {'type': 'Work', 'number': '+1-555-987-6543'}
+    ],
+    'emails': [
+        {'type': 'Personal', 'address': 'john@personal.com'},
+        {'type': 'Work', 'address': 'john@company.com'}
+    ],
+    'company': 'Acme Corporation',
+    'title': 'Software Engineer',
+    'address': '123 Main St, City, State 12345',
+    'website': 'https://johnsmith.dev',
+    'notes': 'Met at Tech Conference 2024'
+}
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h6>📞 Supported Phone Types</h6>
+                    <ul>
+                        <li>Mobile/Cell</li>
+                        <li>Work</li>
+                        <li>Home</li>
+                        <li>Fax</li>
+                        <li>Pager</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>📧 Supported Email Types</h6>
+                    <ul>
+                        <li>Personal</li>
+                        <li>Work</li>
+                        <li>Home</li>
+                        <li>Other</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Features -->
+        <div class="content-card">
+            <h2><i class="bi bi-gear"></i> Advanced Features</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>🔒 Privacy Features</h5>
+                    <ul>
+                        <li><strong>No Storage</strong> - Contacts are not stored by default</li>
+                        <li><strong>Anonymized Logs</strong> - Personal data can be excluded from logs</li>
+                        <li><strong>Secure Processing</strong> - All data is processed in memory only</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>✅ Contact Validation</h5>
+                    <p>The webhook automatically validates:</p>
+                    <ul>
+                        <li>Phone number formats</li>
+                        <li>Email address syntax</li>
+                        <li>Required fields (name, phone or email)</li>
+                        <li>Data size limits</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h5>🔗 Integration Examples</h5>
+            <p>Extend the webhook to integrate with:</p>
+            <ul class="list-inline">
+                <li class="list-inline-item"><span class="badge bg-secondary">CRM Systems</span></li>
+                <li class="list-inline-item"><span class="badge bg-secondary">Email Marketing</span></li>
+                <li class="list-inline-item"><span class="badge bg-secondary">Google Contacts</span></li>
+                <li class="list-inline-item"><span class="badge bg-secondary">Outlook Contacts</span></li>
+                <li class="list-inline-item"><span class="badge bg-secondary">Slack</span></li>
+            </ul>
+        </div>
+
+        <!-- Files Included -->
+        <div class="content-card">
+            <h2><i class="bi bi-files"></i> Files Included</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Core Files</h5>
+                    <ul>
+                        <li><code>contact-sharing-webhook.py</code> - Main webhook script</li>
+                        <li><code>requirements.txt</code> - Python dependencies</li>
+                        <li><code>.env.example</code> - Environment configuration</li>
+                        <li><code>contact-sharing-README.md</code> - Complete documentation</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Features</h5>
+                    <ul>
+                        <li>vCard parsing and generation</li>
+                        <li>QR code creation utilities</li>
+                        <li>Multiple format support</li>
+                        <li>Production-ready with Gunicorn</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="content-card text-center">
+            <h2><i class="bi bi-download"></i> Get Started</h2>
+            <p>Ready to enable contact sharing with AllCodeRelay?</p>
+            <a href="../contact-sharing-webhook.py" class="btn btn-demo" download>
+                <i class="bi bi-download"></i> Download Webhook Script
+            </a>
+            <a href="../requirements.txt" class="btn btn-demo" download>
+                <i class="bi bi-list-check"></i> Download Requirements
+            </a>
+            <a href="../.env.example" class="btn btn-demo" download>
+                <i class="bi bi-gear"></i> Download Config Template
+            </a>
+            <a href="../contact-sharing-README.md" class="btn btn-demo">
+                <i class="bi bi-book"></i> View Full Documentation
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <div class="text-center text-white py-4">
+            <a href="../../" class="btn btn-demo">
+                <i class="bi bi-arrow-left"></i> Back to Gallery
+            </a>
+            <a href="../../../" class="btn btn-demo">
+                <i class="bi bi-house"></i> Main Site
+            </a>
+        </div>
+    </div>
+
+    <script src="../../assets/bootstrap.bundle.min.js"></script>
+</body>
+</html>

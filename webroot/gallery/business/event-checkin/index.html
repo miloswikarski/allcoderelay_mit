@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎫 Event Check-in Webhook - AllCodeRelay Gallery</title>
+    <link rel="stylesheet" href="../../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .tech-badge {
+            display: inline-block;
+            background: #3776ab;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .alert-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .access-level {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+        }
+        
+        .access-general { background: #e8f5e8; color: #2e7d32; }
+        .access-vip { background: #fff3e0; color: #f57c00; }
+        .access-speaker { background: #f3e5f5; color: #7b1fa2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1>🎫 Event Check-in Webhook</h1>
+            <p class="lead">
+                A comprehensive Python Flask webhook for managing event attendee check-ins via QR code scanning.
+            </p>
+            <div class="mb-3">
+                <span class="tech-badge">Python</span>
+                <span class="tech-badge">Flask</span>
+                <span class="tech-badge">SQLite</span>
+            </div>
+            <a href="../../../webhook_config.php" class="btn btn-demo btn-lg">
+                <i class="bi bi-qr-code"></i> Configure Webhook
+            </a>
+            <a href="../event-checkin-README.md" class="btn btn-demo btn-lg">
+                <i class="bi bi-book"></i> Full Documentation
+            </a>
+        </div>
+
+        <!-- Features Section -->
+        <div class="content-card">
+            <h2><i class="bi bi-star"></i> Key Features</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Real-time Check-in</strong> - Instant attendee verification and check-in</li>
+                        <li><strong>QR Code Management</strong> - Unique QR codes for each attendee</li>
+                        <li><strong>Live Statistics</strong> - Real-time attendance tracking and analytics</li>
+                        <li><strong>Access Control</strong> - Multiple access levels (General, VIP, Speaker)</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Mobile-Friendly</strong> - Optimized for mobile scanning workflows</li>
+                        <li><strong>Event Timing</strong> - Automatic event start/end time validation</li>
+                        <li><strong>Admin Dashboard</strong> - Web-based event management interface</li>
+                        <li><strong>Audit Trail</strong> - Complete check-in activity logging</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Access Levels -->
+        <div class="content-card">
+            <h2><i class="bi bi-shield-check"></i> Access Levels</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <span class="access-level access-general">General Access</span>
+                        <p class="mt-2">Standard event attendee with basic event access. Default level for most attendees.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <span class="access-level access-vip">VIP Access</span>
+                        <p class="mt-2">Premium attendee status with special privileges and areas. Priority support included.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <span class="access-level access-speaker">Speaker Access</span>
+                        <p class="mt-2">Event presenters and speakers with backstage and speaker areas access.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Examples -->
+        <div class="content-card">
+            <h2><i class="bi bi-phone"></i> Usage Examples</h2>
+            
+            <h4>🎉 Successful Check-in</h4>
+            <p>When scanning a valid event QR code:</p>
+            <div class="code-block">
+🎉 Welcome!
+
+👤 John Smith
+🎫 Tech Conference 2024
+📍 Convention Center, Hall A
+⏰ Checked in: 14:30
+🎯 Access: General
+
+Enjoy the event! 🎊
+            </div>
+
+            <h4>✅ Already Checked In</h4>
+            <p>For attendees who scan again:</p>
+            <div class="code-block">
+✅ Already Checked In
+
+👤 John Smith
+🎫 Tech Conference 2024
+📍 Convention Center, Hall A
+⏰ Checked in: 14:30 on Dec 15
+🎯 Access: General
+            </div>
+
+            <h4>⏰ Event Not Started</h4>
+            <p>For early arrivals:</p>
+            <div class="code-block">
+⏰ Event Not Started
+
+Tech Conference 2024
+
+Event starts in 3 hours.
+Please return at the scheduled time.
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="content-card">
+            <h2><i class="bi bi-rocket"></i> Quick Start</h2>
+            
+            <h4>1. Installation</h4>
+            <div class="code-block">
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Copy environment configuration
+cp .env.example .env
+            </div>
+
+            <h4>2. Database Setup</h4>
+            <div class="code-block">
+# Initialize the database
+python event-checkin-webhook.py --init-db
+
+# (Optional) Add sample data for testing
+python sample_data.py
+            </div>
+
+            <h4>3. Configuration</h4>
+            <p>Edit <code>.env</code> file with your settings:</p>
+            <div class="code-block">
+FLASK_ENV=development
+SECRET_KEY=your-super-secret-key
+PORT=5000
+DB_PATH=events.db
+            </div>
+
+            <h4>4. Start the Server</h4>
+            <div class="code-block">
+# Development mode
+python event-checkin-webhook.py
+
+# Production mode with Gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 event-checkin-webhook:app
+            </div>
+            
+            <div class="alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Note:</strong> Make sure you have Python 3.8+ installed with Flask and SQLite support.
+            </div>
+        </div>
+
+        <!-- API Endpoints -->
+        <div class="content-card">
+            <h2><i class="bi bi-api"></i> API Endpoints</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Webhook Endpoint</h5>
+                    <ul>
+                        <li><code>POST /webhook</code> - Main AllCodeRelay webhook</li>
+                        <li><strong>Body:</strong> <code>{"code": "EVENT_CHECKIN_XXXXXXXX"}</code></li>
+                    </ul>
+                    
+                    <h5>Admin Endpoints</h5>
+                    <ul>
+                        <li><code>GET /admin/events</code> - List all events with statistics</li>
+                        <li><code>GET /admin/event/&lt;id&gt;/attendees</code> - List attendees for event</li>
+                        <li><code>GET /admin/stats/&lt;id&gt;</code> - Real-time event statistics</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Real-time Statistics</h5>
+                    <div class="code-block">
+{
+  "total_registered": 150,
+  "total_checked_in": 89,
+  "check_in_rate": 59.3,
+  "vip_count": 12,
+  "speaker_count": 8,
+  "hourly_checkins": [
+    {"hour": "09", "count": 25},
+    {"hour": "10", "count": 34}
+  ]
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Included -->
+        <div class="content-card">
+            <h2><i class="bi bi-files"></i> Files Included</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Core Files</h5>
+                    <ul>
+                        <li><code>event-checkin-webhook.py</code> - Main webhook script</li>
+                        <li><code>requirements.txt</code> - Python dependencies</li>
+                        <li><code>sample_data.py</code> - Sample data generator</li>
+                        <li><code>.env.example</code> - Environment configuration</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Features</h5>
+                    <ul>
+                        <li>SQLite database (no setup required)</li>
+                        <li>Complete error handling</li>
+                        <li>Production-ready code</li>
+                        <li>Admin dashboard endpoints</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="content-card text-center">
+            <h2><i class="bi bi-download"></i> Get Started</h2>
+            <p>Ready to implement event check-in with AllCodeRelay?</p>
+            <a href="../event-checkin-webhook.py" class="btn btn-demo" download>
+                <i class="bi bi-download"></i> Download Webhook Script
+            </a>
+            <a href="../requirements.txt" class="btn btn-demo" download>
+                <i class="bi bi-list-check"></i> Download Requirements
+            </a>
+            <a href="../sample_data.py" class="btn btn-demo" download>
+                <i class="bi bi-database"></i> Download Sample Data
+            </a>
+            <a href="../event-checkin-README.md" class="btn btn-demo">
+                <i class="bi bi-book"></i> View Full Documentation
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <div class="text-center text-white py-4">
+            <a href="../../" class="btn btn-demo">
+                <i class="bi bi-arrow-left"></i> Back to Gallery
+            </a>
+            <a href="../../../" class="btn btn-demo">
+                <i class="bi bi-house"></i> Main Site
+            </a>
+        </div>
+    </div>
+
+    <script src="../../assets/bootstrap.bundle.min.js"></script>
+</body>
+</html>

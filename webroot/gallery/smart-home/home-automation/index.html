@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏠 Smart Home Automation Webhook - AllCodeRelay Gallery</title>
+    <link rel="stylesheet" href="../../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 2rem 0;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .tech-badge {
+            display: inline-block;
+            background: #68a063;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .alert-info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .device-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .device-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1>🏠 Smart Home Automation Webhook</h1>
+            <p class="lead">
+                Control your smart home devices by scanning QR codes with AllCodeRelay! Node.js webhook with MQTT and Home Assistant integration.
+            </p>
+            <div class="mb-3">
+                <span class="tech-badge">Node.js</span>
+                <span class="tech-badge">MQTT</span>
+                <span class="tech-badge">Home Assistant</span>
+            </div>
+            <a href="../../../webhook_config.php" class="btn btn-demo btn-lg">
+                <i class="bi bi-qr-code"></i> Configure Webhook
+            </a>
+            <a href="../smart-home-README.md" class="btn btn-demo btn-lg">
+                <i class="bi bi-book"></i> Full Documentation
+            </a>
+        </div>
+
+        <!-- Features Section -->
+        <div class="content-card">
+            <h2><i class="bi bi-star"></i> Key Features</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Device Control</strong> - Toggle lights, switches, and smart outlets</li>
+                        <li><strong>Scene Activation</strong> - Trigger complex automation scenes</li>
+                        <li><strong>Security Integration</strong> - Arm/disarm security systems</li>
+                        <li><strong>MQTT Support</strong> - Direct IoT device communication</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Home Assistant</strong> - Full integration with HA ecosystem</li>
+                        <li><strong>Real-time Feedback</strong> - Instant status updates via AllCodeRelay</li>
+                        <li><strong>Custom Scenes</strong> - Create complex automation workflows</li>
+                        <li><strong>Mobile Optimized</strong> - Perfect for smartphone control</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Device Codes -->
+        <div class="content-card">
+            <h2><i class="bi bi-house-door"></i> Device Codes</h2>
+            
+            <h4>💡 Lights</h4>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="device-card">
+                        <span class="device-icon">💡</span>
+                        <strong>LIGHT_LIVING_ROOM</strong><br>
+                        <small>Living Room Light</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="device-card">
+                        <span class="device-icon">💡</span>
+                        <strong>LIGHT_BEDROOM</strong><br>
+                        <small>Bedroom Light</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="device-card">
+                        <span class="device-icon">💡</span>
+                        <strong>LIGHT_KITCHEN</strong><br>
+                        <small>Kitchen Light</small>
+                    </div>
+                </div>
+            </div>
+
+            <h4>🔌 Switches & Outlets</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="device-card">
+                        <span class="device-icon">🌀</span>
+                        <strong>SWITCH_FAN</strong><br>
+                        <small>Ceiling Fan</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="device-card">
+                        <span class="device-icon">📺</span>
+                        <strong>OUTLET_TV</strong><br>
+                        <small>TV Outlet</small>
+                    </div>
+                </div>
+            </div>
+
+            <h4>🎬 Scenes</h4>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="device-card">
+                        <span class="device-icon">🎬</span>
+                        <strong>SCENE_MOVIE</strong><br>
+                        <small>Movie Night</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="device-card">
+                        <span class="device-icon">🌙</span>
+                        <strong>SCENE_BEDTIME</strong><br>
+                        <small>Bedtime</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="device-card">
+                        <span class="device-icon">☀️</span>
+                        <strong>SCENE_MORNING</strong><br>
+                        <small>Good Morning</small>
+                    </div>
+                </div>
+            </div>
+
+            <h4>🔒 Security</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="device-card">
+                        <span class="device-icon">🔒</span>
+                        <strong>SECURITY_ARM</strong><br>
+                        <small>Arm Security System</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="device-card">
+                        <span class="device-icon">🔓</span>
+                        <strong>SECURITY_DISARM</strong><br>
+                        <small>Disarm Security System</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Examples -->
+        <div class="content-card">
+            <h2><i class="bi bi-phone"></i> Usage Examples</h2>
+            
+            <h4>💡 Scanning a Light Control QR Code</h4>
+            <p>When you scan <code>LIGHT_LIVING_ROOM</code>:</p>
+            <div class="code-block">
+💡 Living Room Light
+
+🟢 Living Room Light turned ON
+            </div>
+
+            <h4>🎬 Activating a Scene</h4>
+            <p>When you scan <code>SCENE_MOVIE</code>:</p>
+            <div class="code-block">
+🎬 Movie Night
+
+✅ Scene activated!
+
+Living Room Light: dim
+Kitchen Light: off
+TV Outlet: on
+            </div>
+
+            <h4>🔒 Security Control</h4>
+            <p>When you scan <code>SECURITY_ARM</code>:</p>
+            <div class="code-block">
+🔒 Arm Security System
+
+✅ Security system ARMED
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="content-card">
+            <h2><i class="bi bi-rocket"></i> Quick Start</h2>
+            
+            <h4>1. Installation</h4>
+            <div class="code-block">
+# Install dependencies
+npm install
+
+# Copy environment configuration
+cp .env.example .env
+            </div>
+
+            <h4>2. Configuration</h4>
+            <p>Edit <code>.env</code> file with your settings:</p>
+            <div class="code-block">
+PORT=3000
+MQTT_BROKER_URL=mqtt://localhost:1883
+MQTT_USERNAME=your_mqtt_username
+MQTT_PASSWORD=your_mqtt_password
+HA_URL=http://localhost:8123
+HA_TOKEN=your_home_assistant_token
+            </div>
+
+            <h4>3. Start the Server</h4>
+            <div class="code-block">
+# Production
+npm start
+
+# Development (with auto-reload)
+npm run dev
+            </div>
+
+            <h4>4. Generate QR Codes</h4>
+            <p>Create QR codes for your devices using the device codes above.</p>
+            
+            <div class="alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Note:</strong> The webhook works without actual devices for testing - it will log commands and return success messages.
+            </div>
+        </div>
+
+        <!-- Integration Guides -->
+        <div class="content-card">
+            <h2><i class="bi bi-link-45deg"></i> Integration Guides</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>🏠 Home Assistant Integration</h5>
+                    <ol>
+                        <li>Get Long-Lived Access Token from Profile → Security</li>
+                        <li>Configure HA_URL and HA_TOKEN in .env</li>
+                        <li>Entity mapping works automatically</li>
+                    </ol>
+                    
+                    <h6>Example Entities:</h6>
+                    <ul>
+                        <li><code>light.living_room</code></li>
+                        <li><code>switch.ceiling_fan</code></li>
+                        <li><code>alarm_control_panel.home</code></li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>📡 MQTT Integration</h5>
+                    <p>Configure your MQTT broker in .env:</p>
+                    <div class="code-block">
+MQTT_BROKER_URL=mqtt://192.168.1.100:1883
+MQTT_USERNAME=homeassistant
+MQTT_PASSWORD=your_password
+                    </div>
+                    
+                    <h6>Example Topics:</h6>
+                    <ul>
+                        <li><code>home/living_room/light</code></li>
+                        <li><code>home/security/arm</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Endpoints -->
+        <div class="content-card">
+            <h2><i class="bi bi-api"></i> API Endpoints</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Webhook Endpoint</h5>
+                    <ul>
+                        <li><code>POST /webhook</code> - Main AllCodeRelay webhook</li>
+                        <li><strong>Body:</strong> <code>{"code": "LIGHT_LIVING_ROOM"}</code></li>
+                    </ul>
+                    
+                    <h5>Utility Endpoints</h5>
+                    <ul>
+                        <li><code>GET /health</code> - Health check and status</li>
+                        <li><code>GET /devices</code> - List all configured devices</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Health Check Response</h5>
+                    <div class="code-block">
+{
+  "status": "ok",
+  "mqtt_connected": true,
+  "timestamp": "2024-12-15T10:30:00.000Z"
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Included -->
+        <div class="content-card">
+            <h2><i class="bi bi-files"></i> Files Included</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Core Files</h5>
+                    <ul>
+                        <li><code>smart-home-webhook.js</code> - Main webhook script</li>
+                        <li><code>package.json</code> - Node.js dependencies</li>
+                        <li><code>.env.example</code> - Environment configuration</li>
+                        <li><code>smart-home-README.md</code> - Complete documentation</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Features</h5>
+                    <ul>
+                        <li>MQTT and Home Assistant integration</li>
+                        <li>Configurable device mappings</li>
+                        <li>Scene automation support</li>
+                        <li>Production-ready with PM2 support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="content-card text-center">
+            <h2><i class="bi bi-download"></i> Get Started</h2>
+            <p>Ready to control your smart home with AllCodeRelay?</p>
+            <a href="../smart-home-webhook.js" class="btn btn-demo" download>
+                <i class="bi bi-download"></i> Download Webhook Script
+            </a>
+            <a href="../package.json" class="btn btn-demo" download>
+                <i class="bi bi-list-check"></i> Download Package.json
+            </a>
+            <a href="../.env.example" class="btn btn-demo" download>
+                <i class="bi bi-gear"></i> Download Config Template
+            </a>
+            <a href="../smart-home-README.md" class="btn btn-demo">
+                <i class="bi bi-book"></i> View Full Documentation
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <div class="text-center text-white py-4">
+            <a href="../../" class="btn btn-demo">
+                <i class="bi bi-arrow-left"></i> Back to Gallery
+            </a>
+            <a href="../../../" class="btn btn-demo">
+                <i class="bi bi-house"></i> Main Site
+            </a>
+        </div>
+    </div>
+
+    <script src="../../assets/bootstrap.bundle.min.js"></script>
+</body>
+</html>
