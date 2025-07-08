@@ -157,7 +157,7 @@ echo json_encode([
 
 See interesting gallery of webhook examples and use cases. Feel free to contribute!
 
-![AllCodeRelay webhook gallery](https://github.com/miloswikarski/allcoderelay_mit/tree/main/webroot/gallery/)
+[AllCodeRelay webhook gallery](https://github.com/miloswikarski/allcoderelay_mit/tree/main/webroot/gallery/)
 
 
 
