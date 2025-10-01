@@ -81,10 +81,27 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
       );
 
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(utf8.decode(response.bodyBytes));
+        // Handle response - some webhooks (like Home Assistant) return 200 without JSON
+        String codeValue = '';
+        String code = event.code;
+
+        // Try to parse JSON if response body is not empty
+        if (response.body.isNotEmpty) {
+          try {
+            final responseData = jsonDecode(utf8.decode(response.bodyBytes));
+            if (responseData is Map) {
+              code = responseData['code'] ?? event.code;
+              codeValue = responseData['codevalue'] ?? '';
+            }
+          } catch (jsonError) {
+            // If JSON parsing fails, just use the scanned code with empty codeValue
+            // This is fine for webhooks that don't return JSON (like Home Assistant)
+          }
+        }
+
         final scan = ScanResult(
-          code: responseData['code'],
-          codeValue: responseData['codevalue'],
+          code: code,
+          codeValue: codeValue,
           timestamp: DateTime.now(),
         );
         await _db.create(scan);
