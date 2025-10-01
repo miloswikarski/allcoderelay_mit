@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+// Enums
+enum PreferredScanMode { both, barcodeOnly, nfcOnly }
+
 // Events
 abstract class SettingsEvent {}
 
@@ -52,6 +55,11 @@ class RemoveWebhookHeader extends SettingsEvent {
 
 class ToggleClipboard extends SettingsEvent {}
 
+class UpdatePreferredScanMode extends SettingsEvent {
+  final PreferredScanMode mode;
+  UpdatePreferredScanMode(this.mode);
+}
+
 // State
 class SettingsState {
   final String webhookUrl;
@@ -63,6 +71,7 @@ class SettingsState {
   final double scanDelay;
   final bool beepEnabled;
   final bool copyToClipboard;
+  final PreferredScanMode preferredScanMode;
 
   SettingsState({
     this.webhookUrl = 'https://n8n.grapph.com/webhook/allcoderelay',
@@ -74,6 +83,7 @@ class SettingsState {
     this.scanDelay = 2.0,
     this.beepEnabled = true,
     this.copyToClipboard = false,
+    this.preferredScanMode = PreferredScanMode.both,
   });
 
   SettingsState copyWith({
@@ -86,6 +96,7 @@ class SettingsState {
     double? scanDelay,
     bool? beepEnabled,
     bool? copyToClipboard,
+    PreferredScanMode? preferredScanMode,
   }) {
     return SettingsState(
       webhookUrl: webhookUrl ?? this.webhookUrl,
@@ -97,6 +108,7 @@ class SettingsState {
       scanDelay: scanDelay ?? this.scanDelay,
       beepEnabled: beepEnabled ?? this.beepEnabled,
       copyToClipboard: copyToClipboard ?? this.copyToClipboard,
+      preferredScanMode: preferredScanMode ?? this.preferredScanMode,
     );
   }
 }
@@ -117,6 +129,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<UpdateScanDelay>(_onUpdateScanDelay);
     on<ToggleBeep>(_onToggleBeep);
     on<ToggleClipboard>(_onToggleClipboard);
+    on<UpdatePreferredScanMode>(_onUpdatePreferredScanMode);
 
     // Load settings when bloc is created
     add(LoadSettings());
@@ -139,6 +152,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       final scanDelay = await _storage.read(key: 'scan_delay');
       final beepEnabled = await _storage.read(key: 'beep_enabled');
       final copyToClipboard = await _storage.read(key: 'copy_to_clipboard');
+      final preferredScanModeStr = await _storage.read(
+        key: 'preferred_scan_mode',
+      );
 
       // Parse headers from JSON
       Map<String, String> headers = {'Content-Type': 'application/json'};
@@ -153,6 +169,22 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         }
       }
 
+      // Parse preferred scan mode
+      PreferredScanMode preferredScanMode = PreferredScanMode.both;
+      if (preferredScanModeStr != null) {
+        switch (preferredScanModeStr) {
+          case 'both':
+            preferredScanMode = PreferredScanMode.both;
+            break;
+          case 'barcodeOnly':
+            preferredScanMode = PreferredScanMode.barcodeOnly;
+            break;
+          case 'nfcOnly':
+            preferredScanMode = PreferredScanMode.nfcOnly;
+            break;
+        }
+      }
+
       emit(
         state.copyWith(
           webhookUrl: url ?? state.webhookUrl,
@@ -160,10 +192,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           webhookHeaders: headers,
           isDarkMode: isDarkMode == 'true',
           isContinuousScanning: isContinuousScanning == 'true',
-          scanDelay:
-              scanDelay != null ? double.parse(scanDelay) : state.scanDelay,
+          scanDelay: scanDelay != null
+              ? double.parse(scanDelay)
+              : state.scanDelay,
           beepEnabled: beepEnabled == null ? true : beepEnabled == 'true',
           copyToClipboard: copyToClipboard == 'true',
+          preferredScanMode: preferredScanMode,
           isLoading: false,
         ),
       );
@@ -358,6 +392,30 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         value: (!state.copyToClipboard).toString(),
       );
       emit(state.copyWith(copyToClipboard: !state.copyToClipboard));
+    } catch (e) {
+      // Handle error
+    }
+  }
+
+  Future<void> _onUpdatePreferredScanMode(
+    UpdatePreferredScanMode event,
+    Emitter<SettingsState> emit,
+  ) async {
+    try {
+      String modeStr;
+      switch (event.mode) {
+        case PreferredScanMode.both:
+          modeStr = 'both';
+          break;
+        case PreferredScanMode.barcodeOnly:
+          modeStr = 'barcodeOnly';
+          break;
+        case PreferredScanMode.nfcOnly:
+          modeStr = 'nfcOnly';
+          break;
+      }
+      await _storage.write(key: 'preferred_scan_mode', value: modeStr);
+      emit(state.copyWith(preferredScanMode: event.mode));
     } catch (e) {
       // Handle error
     }

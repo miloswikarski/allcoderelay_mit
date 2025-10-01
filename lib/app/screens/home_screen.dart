@@ -91,28 +91,50 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                       if (_isExpanded)
-                        SizedBox(
-                          height: 260,
-                          child: Consumer<ScanningStateProvider>(
-                            builder: (context, scanningState, _) {
-                              final currentMode = scanningState.currentMode;
+                        BlocBuilder<SettingsBloc, SettingsState>(
+                          builder: (context, settingsState) {
+                            return SizedBox(
+                              height: 260,
+                              child: Consumer<ScanningStateProvider>(
+                                builder: (context, scanningState, _) {
+                                  final currentMode = scanningState.currentMode;
+                                  final preferredMode =
+                                      settingsState.preferredScanMode;
 
-                              return Row(
-                                children: [
-                                  if (currentMode == ScanningMode.none ||
-                                      currentMode == ScanningMode.qr)
-                                    Expanded(child: const ScanButton()),
-                                  if (currentMode == ScanningMode.qr)
-                                    const SizedBox.shrink()
-                                  else if (currentMode == ScanningMode.none)
-                                    const SizedBox(width: 16),
-                                  if (currentMode == ScanningMode.none ||
-                                      currentMode == ScanningMode.nfc)
-                                    Expanded(child: const NfcButton()),
-                                ],
-                              );
-                            },
-                          ),
+                                  // Determine which buttons to show based on preferred mode
+                                  final showBarcode =
+                                      preferredMode == PreferredScanMode.both ||
+                                      preferredMode ==
+                                          PreferredScanMode.barcodeOnly;
+                                  final showNfc =
+                                      preferredMode == PreferredScanMode.both ||
+                                      preferredMode ==
+                                          PreferredScanMode.nfcOnly;
+
+                                  return Row(
+                                    children: [
+                                      if (showBarcode &&
+                                          (currentMode == ScanningMode.none ||
+                                              currentMode == ScanningMode.qr))
+                                        Expanded(child: const ScanButton()),
+                                      if (showBarcode &&
+                                          showNfc &&
+                                          currentMode == ScanningMode.qr)
+                                        const SizedBox.shrink()
+                                      else if (showBarcode &&
+                                          showNfc &&
+                                          currentMode == ScanningMode.none)
+                                        const SizedBox(width: 16),
+                                      if (showNfc &&
+                                          (currentMode == ScanningMode.none ||
+                                              currentMode == ScanningMode.nfc))
+                                        Expanded(child: const NfcButton()),
+                                    ],
+                                  );
+                                },
+                              ),
+                            );
+                          },
                         ),
                     ],
                   ),

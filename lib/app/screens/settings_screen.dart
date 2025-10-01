@@ -270,6 +270,111 @@ class SettingsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Preferred Scan Mode',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: CupertinoColors.label.resolveFrom(context),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Choose which scanning options to show on the home screen',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: CupertinoColors.secondaryLabel.resolveFrom(
+                            context,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      RadioListTile<PreferredScanMode>(
+                        title: Text(
+                          'NFC + Barcode',
+                          style: TextStyle(
+                            color: CupertinoColors.label.resolveFrom(context),
+                          ),
+                        ),
+                        subtitle: Text(
+                          'Show both scanning options',
+                          style: TextStyle(
+                            color: CupertinoColors.secondaryLabel.resolveFrom(
+                              context,
+                            ),
+                          ),
+                        ),
+                        value: PreferredScanMode.both,
+                        groupValue: state.preferredScanMode,
+                        onChanged: (value) {
+                          if (value != null) {
+                            context.read<SettingsBloc>().add(
+                              UpdatePreferredScanMode(value),
+                            );
+                          }
+                        },
+                      ),
+                      RadioListTile<PreferredScanMode>(
+                        title: Text(
+                          'Barcode Only',
+                          style: TextStyle(
+                            color: CupertinoColors.label.resolveFrom(context),
+                          ),
+                        ),
+                        subtitle: Text(
+                          'Show only barcode/QR scanner',
+                          style: TextStyle(
+                            color: CupertinoColors.secondaryLabel.resolveFrom(
+                              context,
+                            ),
+                          ),
+                        ),
+                        value: PreferredScanMode.barcodeOnly,
+                        groupValue: state.preferredScanMode,
+                        onChanged: (value) {
+                          if (value != null) {
+                            context.read<SettingsBloc>().add(
+                              UpdatePreferredScanMode(value),
+                            );
+                          }
+                        },
+                      ),
+                      RadioListTile<PreferredScanMode>(
+                        title: Text(
+                          'NFC Only',
+                          style: TextStyle(
+                            color: CupertinoColors.label.resolveFrom(context),
+                          ),
+                        ),
+                        subtitle: Text(
+                          'Show only NFC scanner',
+                          style: TextStyle(
+                            color: CupertinoColors.secondaryLabel.resolveFrom(
+                              context,
+                            ),
+                          ),
+                        ),
+                        value: PreferredScanMode.nfcOnly,
+                        groupValue: state.preferredScanMode,
+                        onChanged: (value) {
+                          if (value != null) {
+                            context.read<SettingsBloc>().add(
+                              UpdatePreferredScanMode(value),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
                 child: ListTile(
                   title: Text(
                     'About',
@@ -297,47 +402,46 @@ class SettingsScreen extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Add Custom Header'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Header Name',
-                    hintText: 'e.g. Authorization',
-                  ),
-                  onChanged: (value) => headerKey = value,
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Header Value',
-                    hintText: 'e.g. Bearer token123',
-                  ),
-                  onChanged: (value) => headerValue = value,
-                ),
-              ],
+      builder: (context) => AlertDialog(
+        title: const Text('Add Custom Header'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'Header Name',
+                hintText: 'e.g. Authorization',
+              ),
+              onChanged: (value) => headerKey = value,
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
+            const SizedBox(height: 16),
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'Header Value',
+                hintText: 'e.g. Bearer token123',
               ),
-              TextButton(
-                onPressed: () {
-                  if (headerKey.isNotEmpty && headerValue.isNotEmpty) {
-                    context.read<SettingsBloc>().add(
-                      AddWebhookHeader(headerKey, headerValue),
-                    );
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Add'),
-              ),
-            ],
+              onChanged: (value) => headerValue = value,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              if (headerKey.isNotEmpty && headerValue.isNotEmpty) {
+                context.read<SettingsBloc>().add(
+                  AddWebhookHeader(headerKey, headerValue),
+                );
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      ),
     );
   }
 }
