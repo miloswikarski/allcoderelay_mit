@@ -6,7 +6,7 @@ Developed by [Grapph](https://grapph.com)
 
 Download on [Google Play](https://play.google.com/store/apps/details?id=com.grapph.allcoderelay)
 
-Download on [App Store](https://apps.apple.com/us/app/allcoderelay/id6447867807](https://apps.apple.com/us/app/allcoderelay-qr-barcode-nfc/id6753862179)
+Download on [App Store](https://apps.apple.com/us/app/allcoderelay-qr-barcode-nfc/id6753862179)
 
 
 ![AllCodeRelay](acr.jpg)
