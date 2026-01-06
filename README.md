@@ -11,13 +11,37 @@ Download on [App Store](https://apps.apple.com/us/app/allcoderelay-qr-barcode-nf
 
 ![AllCodeRelay](acr.jpg)
 
+AllCodeRelay is a Flutter mobile application that serves as a universal code scanner with webhook integration capabilities.
+
 ## Features
 
-- QR Code and Barcode scanning
+- Multi-format, QR Code and Barcode scanning
 - NFC tag reading
 - Webhook integration for sending scanned data
 - Secure storage of webhook URLs
 - Customizable settings
+
+*Webhook integration:* Automatically sends scanned data to configured endpoints via HTTP POST
+
+*Secure configuration:* Uses Flutter Secure Storage for webhook URLs and supports custom headers
+
+*Flexible settings:* Continuous scanning, scan delays, audio feedback, dark mode
+
+*Local storage:* SQLite database for storing scan history when webhooks fail
+
+*Architecture:* Built with Flutter 3.24+ using modern state management (BLoC pattern)
+
+Navigation handled by `go_router`
+
+Modular design with separate screens for home, settings, and about
+
+## Workflow
+ - User scans codes using the camera or NFC
+ - App sends scan data to configured webhook endpoint
+ - Server processes and returns structured response
+ - App displays results or stores locally if webhook fails
+ - The app is designed for enterprise/automation use cases where scanned codes need to be processed by external systems in real-time.
+
 
 ## Getting Started
 
