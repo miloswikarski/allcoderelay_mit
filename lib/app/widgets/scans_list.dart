@@ -15,6 +15,7 @@ class ScansList extends StatefulWidget {
 
 class _ScansListState extends State<ScansList> {
   final Set<int> _selectedItems = {};
+  ScannerSuccess? _previousState;
 
   bool _isValidUrl(String value) {
     try {
@@ -36,7 +37,7 @@ class _ScansListState extends State<ScansList> {
                   .platformDefault, // Changed from externalApplication to platformDefault
         );
 
-        if (!launched && context.mounted) {
+        if (!launched && mounted) {
           showCupertinoDialog(
             context: context,
             builder:
@@ -64,7 +65,7 @@ class _ScansListState extends State<ScansList> {
                 LaunchMode
                     .platformDefault, // Changed from externalApplication to platformDefault
           );
-        } else if (context.mounted) {
+        } else if (mounted) {
           showCupertinoDialog(
             context: context,
             builder:
@@ -82,7 +83,7 @@ class _ScansListState extends State<ScansList> {
         }
       }
     } catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         showCupertinoDialog(
           context: context,
           builder:
@@ -249,65 +250,149 @@ class _ScansListState extends State<ScansList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ScannerBloc, ScannerState>(
-      builder: (context, state) {
-        if (state is ScannerInitial) {
-          return Center(
-            child: Text(
-              'Scan a code to get started',
-              style: TextStyle(
-                fontFamily: '.SF Pro Text',
-                fontSize: 17,
-                color: CupertinoColors.secondaryLabel.resolveFrom(context),
-              ),
-            ),
-          );
-        }
-
-        if (state is ScannerLoading) {
-          return const Center(child: CupertinoActivityIndicator());
-        }
-
-        if (state is ScannerError) {
-          Future.delayed(const Duration(seconds: 3), () {
-            if (mounted) {
-              setState(() {
-                // Force rebuild after delay
-                // reload the data
-                context.read<ScannerBloc>().add(LoadScans());
-              });
-            }
-          });
-          return Center(
-            child: Text(
-              'Error: ${state.message}',
-              style: TextStyle(
-                fontFamily: '.SF Pro Text',
-                fontSize: 17,
-                color: CupertinoColors.destructiveRed.resolveFrom(context),
-              ),
-            ),
-          );
-        }
-
-        if (state is ScannerSuccess && state.scans.isEmpty) {
-          return Center(
-            child: Text(
-              'No scans yet',
-              style: TextStyle(
-                fontFamily: '.SF Pro Text',
-                fontSize: 17,
-                color: CupertinoColors.secondaryLabel.resolveFrom(context),
-              ),
-            ),
-          );
-        }
-
+    return BlocListener<ScannerBloc, ScannerState>(
+      listener: (context, state) {
         if (state is ScannerSuccess) {
-          final scans = state.scans;
+          debugPrint(
+            '📊 [BlocListener] ScannerSuccess - ${state.scans.length} scans, previous state exists: ${_previousState != null}',
+          );
 
-          return Column(
-            children: [
+          if (_previousState != null) {
+            debugPrint('📊 [BlocListener] Checking for changes...');
+            debugPrint('📊 [BlocListener] Current scans: ${state.scans.length}, Previous scans: ${_previousState!.scans.length}');
+            
+            int changeCount = 0;
+            
+            // Check if any scan's webhook error was cleared or changed
+            for (final currentScan in state.scans) {
+              final previousScan = _previousState!.scans
+                  .firstWhere(
+                    (s) => s.id == currentScan.id,
+                    orElse: () => currentScan,
+                  );
+
+              // Only log scans with webhook errors
+              if (previousScan.webhookError != null || currentScan.webhookError != null) {
+                debugPrint(
+                  '📊 [BlocListener] Scan ID ${currentScan.id}: prev="${previousScan.webhookError}" curr="${currentScan.webhookError}"',
+                );
+              }
+
+              if (previousScan.webhookError != currentScan.webhookError) {
+                changeCount++;
+                debugPrint('📊 [BlocListener] ✓ CHANGE #$changeCount DETECTED');
+
+                if (previousScan.webhookError != null &&
+                    currentScan.webhookError == null) {
+                  // Error was cleared - retry successful
+                  debugPrint('✓ [BlocListener] Showing success SnackBar');
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('✓ Webhook sent successfully'),
+                      duration: const Duration(seconds: 2),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Colors.green.withValues(alpha: 0.9),
+                    ),
+                  );
+                } else if (previousScan.webhookError != null &&
+                    currentScan.webhookError != null &&
+                    currentScan.webhookError != previousScan.webhookError) {
+                  // Error message changed - retry failed with new error
+                  debugPrint('✗ [BlocListener] Showing error SnackBar');
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '✗ Webhook failed: ${currentScan.webhookError}',
+                      ),
+                      duration: const Duration(seconds: 3),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor:
+                          CupertinoColors.destructiveRed.withValues(alpha: 0.9),
+                    ),
+                  );
+                } else if (previousScan.webhookError == null &&
+                    currentScan.webhookError == null) {
+                  // No error before or after - successful webhook sent
+                  debugPrint('✓ [BlocListener] Webhook sent - no previous error');
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('✓ Webhook sent successfully'),
+                      duration: const Duration(seconds: 2),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Colors.green.withValues(alpha: 0.9),
+                    ),
+                  );
+                }
+              }
+            }
+            debugPrint('📊 [BlocListener] Finished checking scans. Total changes: $changeCount');
+          }
+        }
+        _previousState = state is ScannerSuccess ? state : null;
+      },
+      child: BlocBuilder<ScannerBloc, ScannerState>(
+        builder: (context, state) {
+          if (state is ScannerInitial) {
+            return Center(
+              child: Text(
+                'Scan a code to get started',
+                style: TextStyle(
+                  fontFamily: '.SF Pro Text',
+                  fontSize: 17,
+                  color: CupertinoColors.secondaryLabel.resolveFrom(context),
+                ),
+              ),
+            );
+          }
+
+          if (state is ScannerLoading) {
+            return const Center(child: CupertinoActivityIndicator());
+          }
+
+          if (state is ScannerError) {
+            Future.delayed(const Duration(seconds: 3), () {
+              if (mounted) {
+                setState(() {
+                  // Force rebuild after delay
+                  // reload the data
+                  context.read<ScannerBloc>().add(LoadScans());
+                });
+              }
+            });
+            return Center(
+              child: Text(
+                'Error: ${state.message}',
+                style: TextStyle(
+                  fontFamily: '.SF Pro Text',
+                  fontSize: 17,
+                  color: CupertinoColors.destructiveRed.resolveFrom(context),
+                ),
+              ),
+            );
+          }
+
+          if (state is ScannerSuccess && state.scans.isEmpty) {
+            return Center(
+              child: Text(
+                'No scans yet',
+                style: TextStyle(
+                  fontFamily: '.SF Pro Text',
+                  fontSize: 17,
+                  color: CupertinoColors.secondaryLabel.resolveFrom(context),
+                ),
+              ),
+            );
+          }
+
+          if (state is ScannerSuccess) {
+            _previousState = state;
+            final scans = state.scans;
+
+            return Column(
+              children: [
               if (_selectedItems.isNotEmpty)
                 Container(
                   decoration: BoxDecoration(
@@ -503,133 +588,222 @@ class _ScansListState extends State<ScansList> {
                                                 padding: const EdgeInsets.all(
                                                   16.0,
                                                 ),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      'Code',
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            '.SF Pro Text',
-                                                        fontSize: 13,
-                                                        color: CupertinoColors
-                                                            .secondaryLabel
-                                                            .resolveFrom(
-                                                              context,
-                                                            ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 4),
-                                                    _isValidUrl(scan.code)
-                                                        ? CupertinoButton(
-                                                          padding:
-                                                              EdgeInsets.zero,
-                                                          alignment:
-                                                              Alignment
-                                                                  .centerLeft,
-                                                          onPressed:
-                                                              () => _launchUrl(
-                                                                scan.code,
+                                                child: SingleChildScrollView(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        'Code',
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              '.SF Pro Text',
+                                                          fontSize: 13,
+                                                          color: CupertinoColors
+                                                              .secondaryLabel
+                                                              .resolveFrom(
+                                                                context,
                                                               ),
-                                                          child: Text(
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      _isValidUrl(scan.code)
+                                                          ? CupertinoButton(
+                                                            padding:
+                                                                EdgeInsets.zero,
+                                                            alignment:
+                                                                Alignment
+                                                                    .centerLeft,
+                                                            onPressed:
+                                                                () =>
+                                                                    _launchUrl(
+                                                                      scan.code,
+                                                                    ),
+                                                            child: Text(
+                                                              scan.code,
+                                                              style: const TextStyle(
+                                                                fontFamily:
+                                                                    '.SF Pro Text',
+                                                                fontSize: 17,
+                                                                color:
+                                                                    CupertinoColors
+                                                                        .activeBlue,
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .underline,
+                                                              ),
+                                                            ),
+                                                          )
+                                                          : SelectableText(
                                                             scan.code,
                                                             style: const TextStyle(
                                                               fontFamily:
                                                                   '.SF Pro Text',
                                                               fontSize: 17,
-                                                              color:
-                                                                  CupertinoColors
-                                                                      .activeBlue,
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .underline,
                                                             ),
                                                           ),
-                                                        )
-                                                        : Text(
-                                                          scan.code,
-                                                          style: const TextStyle(
-                                                            fontFamily:
-                                                                '.SF Pro Text',
-                                                            fontSize: 17,
-                                                          ),
-                                                        ),
-                                                    const SizedBox(height: 16),
-                                                    Text(
-                                                      'Value',
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            '.SF Pro Text',
-                                                        fontSize: 13,
-                                                        color: CupertinoColors
-                                                            .secondaryLabel
-                                                            .resolveFrom(
-                                                              context,
-                                                            ),
+                                                      const SizedBox(
+                                                        height: 16,
                                                       ),
-                                                    ),
-                                                    const SizedBox(height: 4),
-                                                    _isValidUrl(scan.codeValue)
-                                                        ? CupertinoButton(
-                                                          padding:
-                                                              EdgeInsets.zero,
-                                                          alignment:
-                                                              Alignment
-                                                                  .centerLeft,
-                                                          onPressed:
-                                                              () => _launchUrl(
-                                                                scan.codeValue,
+                                                      Text(
+                                                        'Value',
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              '.SF Pro Text',
+                                                          fontSize: 13,
+                                                          color: CupertinoColors
+                                                              .secondaryLabel
+                                                              .resolveFrom(
+                                                                context,
                                                               ),
-                                                          child: Text(
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      _isValidUrl(
+                                                            scan.codeValue,
+                                                          )
+                                                          ? CupertinoButton(
+                                                            padding:
+                                                                EdgeInsets.zero,
+                                                            alignment:
+                                                                Alignment
+                                                                    .centerLeft,
+                                                            onPressed:
+                                                                () => _launchUrl(
+                                                                  scan.codeValue,
+                                                                ),
+                                                            child: Text(
+                                                              scan.codeValue,
+                                                              style: const TextStyle(
+                                                                fontFamily:
+                                                                    '.SF Pro Text',
+                                                                fontSize: 17,
+                                                                color:
+                                                                    CupertinoColors
+                                                                        .activeBlue,
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .underline,
+                                                              ),
+                                                            ),
+                                                          )
+                                                          : SelectableText(
                                                             scan.codeValue,
                                                             style: const TextStyle(
                                                               fontFamily:
                                                                   '.SF Pro Text',
                                                               fontSize: 17,
-                                                              color:
-                                                                  CupertinoColors
-                                                                      .activeBlue,
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .underline,
                                                             ),
                                                           ),
-                                                        )
-                                                        : Text(
-                                                          scan.codeValue,
+                                                      const SizedBox(
+                                                        height: 16,
+                                                      ),
+                                                      Text(
+                                                        'Timestamp',
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              '.SF Pro Text',
+                                                          fontSize: 13,
+                                                          color: CupertinoColors
+                                                              .secondaryLabel
+                                                              .resolveFrom(
+                                                                context,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      SelectableText(
+                                                        scan.timestamp
+                                                            .toString()
+                                                            .split('.')[0],
+                                                        style: const TextStyle(
+                                                          fontFamily:
+                                                              '.SF Pro Text',
+                                                          fontSize: 17,
+                                                        ),
+                                                      ),
+                                                      if (scan.webhookError !=
+                                                          null)
+                                                        const SizedBox(
+                                                          height: 16,
+                                                        ),
+                                                      if (scan.webhookError !=
+                                                          null)
+                                                        Text(
+                                                          'Webhook Error',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                '.SF Pro Text',
+                                                            fontSize: 13,
+                                                            color: CupertinoColors
+                                                                .destructiveRed,
+                                                          ),
+                                                        ),
+                                                      if (scan.webhookError !=
+                                                          null)
+                                                        const SizedBox(height: 4),
+                                                      if (scan.webhookError !=
+                                                          null)
+                                                        SelectableText(
+                                                          scan.webhookError!,
                                                           style: const TextStyle(
                                                             fontFamily:
                                                                 '.SF Pro Text',
-                                                            fontSize: 17,
+                                                            fontSize: 14,
                                                           ),
                                                         ),
-                                                    const SizedBox(height: 16),
-                                                    Text(
-                                                      'Timestamp',
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            '.SF Pro Text',
-                                                        fontSize: 13,
-                                                        color: CupertinoColors
-                                                            .secondaryLabel
-                                                            .resolveFrom(
+                                                      const SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      SizedBox(
+                                                        width: double.infinity,
+                                                        child: CupertinoButton(
+                                                          color:
+                                                              CupertinoColors
+                                                                  .activeBlue,
+                                                          onPressed: () {
+                                                            debugPrint(
+                                                              '🔄 [UI] Webhook Again tapped for: ${scan.code}',
+                                                            );
+                                                            context
+                                                                .read<
+                                                                    ScannerBloc>()
+                                                                .add(
+                                                                  RetryWebhook(
+                                                                    scan,
+                                                                  ),
+                                                                );
+                                                            ScaffoldMessenger.of(
                                                               context,
-                                                            ),
+                                                            )
+                                                                .clearSnackBars();
+                                                            ScaffoldMessenger.of(
+                                                              context,
+                                                            )
+                                                                .showSnackBar(
+                                                              SnackBar(
+                                                                content: const Text(
+                                                                  'Sending webhook...',
+                                                                ),
+                                                                duration:
+                                                                    const Duration(
+                                                                      seconds: 1,
+                                                                    ),
+                                                                behavior:
+                                                                    SnackBarBehavior
+                                                                        .floating,
+                                                              ),
+                                                            );
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: const Text(
+                                                            'Webhook Again',
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                    const SizedBox(height: 4),
-                                                    Text(
-                                                      scan.timestamp
-                                                          .toString()
-                                                          .split('.')[0],
-                                                      style: const TextStyle(
-                                                        fontFamily:
-                                                            '.SF Pro Text',
-                                                        fontSize: 17,
-                                                      ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -674,10 +848,31 @@ class _ScansListState extends State<ScansList> {
                               ),
                             ),
                           ),
-                          trailing: CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () => _editScan(scan),
-                            child: const Icon(CupertinoIcons.pencil, size: 20),
+                          trailing: SizedBox(
+                            width: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                if (scan.webhookError != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Icon(
+                                      CupertinoIcons.exclamationmark_circle_fill,
+                                      color: CupertinoColors.destructiveRed
+                                          .resolveFrom(context),
+                                      size: 20,
+                                    ),
+                                  ),
+                                CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () => _editScan(scan),
+                                  child: const Icon(
+                                    CupertinoIcons.pencil,
+                                    size: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -686,20 +881,21 @@ class _ScansListState extends State<ScansList> {
                 ),
               ),
             ],
-          );
-        }
+            );
+          }
 
-        return const Center(
-          child: Text(
-            'Unknown state',
-            style: TextStyle(
-              fontFamily: '.SF Pro Text',
-              fontSize: 17,
-              color: CupertinoColors.secondaryLabel,
+          return const Center(
+            child: Text(
+              'Unknown state',
+              style: TextStyle(
+                fontFamily: '.SF Pro Text',
+                fontSize: 17,
+                color: CupertinoColors.secondaryLabel,
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

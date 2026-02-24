@@ -8,6 +8,7 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: const Text('About'),
@@ -58,12 +59,13 @@ class AboutScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              const Card(
+              Card(
                 child: Column(
                   children: [
                     ListTile(
-                      title: Text('Features'),
-                      subtitle: Text(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
+                      title: const Text('Features'),
+                      subtitle: const Text(
                         '• QR Code and Barcode scanning\n'
                         '• NFC tag reading\n'
                         '• Webhook integration',
@@ -77,6 +79,7 @@ class AboutScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     ListTile(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
                       leading: const Icon(Icons.description),
                       title: const Text('Documentation'),
                       subtitle: const Text('View online documentation'),
@@ -94,14 +97,16 @@ class AboutScreen extends StatelessWidget {
               Card(
                 child: Column(
                   children: [
-                    const ListTile(
-                      title: Text('Enterprise Integration'),
-                      subtitle: Text(
+                    ListTile(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
+                      title: const Text('Enterprise Integration'),
+                      subtitle: const Text(
                         'AllCodeRelay can be integrated with your existing systems. '
                         'Contact us for custom integration solutions and enterprise support.',
                       ),
                     ),
                     ListTile(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
                       leading: const Icon(Icons.email),
                       title: const Text('Contact Us'),
                       subtitle: const Text('allcoderelay@grapph.com'),

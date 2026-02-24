@@ -5,12 +5,16 @@ class ScanResult {
   final String code;
   String codeValue;
   final DateTime timestamp;
+  final String? webhookError;
+  final DateTime? lastWebhookAttempt;
 
   ScanResult({
     this.id,
     required this.code,
     required this.codeValue,
     required this.timestamp,
+    this.webhookError,
+    this.lastWebhookAttempt,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +24,8 @@ class ScanResult {
       'code_value':
           codeValue, // utf8.encode(codeValue).toString(), // Encode to UTF-8
       'timestamp': timestamp.toIso8601String(),
+      'webhook_error': webhookError,
+      'last_webhook_attempt': lastWebhookAttempt?.toIso8601String(),
     };
   }
 
@@ -49,6 +55,10 @@ class ScanResult {
       code: map['code'],
       codeValue: decodedValue,
       timestamp: DateTime.parse(map['timestamp']),
+      webhookError: map['webhook_error'] as String?,
+      lastWebhookAttempt: map['last_webhook_attempt'] != null
+          ? DateTime.parse(map['last_webhook_attempt'] as String)
+          : null,
     );
   }
 
@@ -57,12 +67,18 @@ class ScanResult {
     String? code,
     String? codeValue,
     DateTime? timestamp,
+    String? webhookError,
+    bool clearWebhookError = false,
+    DateTime? lastWebhookAttempt,
+    bool clearLastWebhookAttempt = false,
   }) {
     return ScanResult(
       id: id ?? this.id,
       code: code ?? this.code,
       codeValue: codeValue ?? this.codeValue,
       timestamp: timestamp ?? this.timestamp,
+      webhookError: clearWebhookError ? null : (webhookError ?? this.webhookError),
+      lastWebhookAttempt: clearLastWebhookAttempt ? null : (lastWebhookAttempt ?? this.lastWebhookAttempt),
     );
   }
 }

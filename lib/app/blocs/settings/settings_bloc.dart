@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../models/webhook.dart';
+import '../../services/database_service.dart';
 
 // Enums
 enum PreferredScanMode { both, barcodeOnly, nfcOnly }
@@ -60,11 +62,28 @@ class UpdatePreferredScanMode extends SettingsEvent {
   UpdatePreferredScanMode(this.mode);
 }
 
+class LoadWebhooks extends SettingsEvent {}
+
+class SwitchWebhook extends SettingsEvent {
+  final Webhook webhook;
+  SwitchWebhook(this.webhook);
+}
+
+class DeleteWebhook extends SettingsEvent {
+  final int webhookId;
+  DeleteWebhook(this.webhookId);
+}
+
+class SaveWebhookToHistory extends SettingsEvent {}
+
 // State
 class SettingsState {
   final String webhookUrl;
   final String webhookTitle;
   final Map<String, String> webhookHeaders;
+  final String? originalWebhookUrl;
+  final String? originalWebhookTitle;
+  final Map<String, String>? originalWebhookHeaders;
   final bool isDarkMode;
   final bool isLoading;
   final bool isContinuousScanning;
@@ -72,11 +91,15 @@ class SettingsState {
   final bool beepEnabled;
   final bool copyToClipboard;
   final PreferredScanMode preferredScanMode;
+  final List<Webhook> webhooks;
 
   SettingsState({
     this.webhookUrl = 'https://n8n.grapph.com/webhook/allcoderelay',
     this.webhookTitle = 'Default Webhook',
     this.webhookHeaders = const {'Content-Type': 'application/json'},
+    this.originalWebhookUrl,
+    this.originalWebhookTitle,
+    this.originalWebhookHeaders,
     this.isDarkMode = false,
     this.isLoading = false,
     this.isContinuousScanning = false,
@@ -84,12 +107,16 @@ class SettingsState {
     this.beepEnabled = true,
     this.copyToClipboard = false,
     this.preferredScanMode = PreferredScanMode.both,
+    this.webhooks = const [],
   });
 
   SettingsState copyWith({
     String? webhookUrl,
     String? webhookTitle,
     Map<String, String>? webhookHeaders,
+    String? originalWebhookUrl,
+    String? originalWebhookTitle,
+    Map<String, String>? originalWebhookHeaders,
     bool? isDarkMode,
     bool? isLoading,
     bool? isContinuousScanning,
@@ -97,11 +124,15 @@ class SettingsState {
     bool? beepEnabled,
     bool? copyToClipboard,
     PreferredScanMode? preferredScanMode,
+    List<Webhook>? webhooks,
   }) {
     return SettingsState(
       webhookUrl: webhookUrl ?? this.webhookUrl,
       webhookTitle: webhookTitle ?? this.webhookTitle,
       webhookHeaders: webhookHeaders ?? this.webhookHeaders,
+      originalWebhookUrl: originalWebhookUrl ?? this.originalWebhookUrl,
+      originalWebhookTitle: originalWebhookTitle ?? this.originalWebhookTitle,
+      originalWebhookHeaders: originalWebhookHeaders ?? this.originalWebhookHeaders,
       isDarkMode: isDarkMode ?? this.isDarkMode,
       isLoading: isLoading ?? this.isLoading,
       isContinuousScanning: isContinuousScanning ?? this.isContinuousScanning,
@@ -109,6 +140,7 @@ class SettingsState {
       beepEnabled: beepEnabled ?? this.beepEnabled,
       copyToClipboard: copyToClipboard ?? this.copyToClipboard,
       preferredScanMode: preferredScanMode ?? this.preferredScanMode,
+      webhooks: webhooks ?? this.webhooks,
     );
   }
 }
@@ -130,6 +162,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<ToggleBeep>(_onToggleBeep);
     on<ToggleClipboard>(_onToggleClipboard);
     on<UpdatePreferredScanMode>(_onUpdatePreferredScanMode);
+    on<LoadWebhooks>(_onLoadWebhooks);
+    on<SwitchWebhook>(_onSwitchWebhook);
+    on<DeleteWebhook>(_onDeleteWebhook);
+    on<SaveWebhookToHistory>(_onSaveWebhookToHistory);
 
     // Load settings when bloc is created
     add(LoadSettings());
@@ -185,20 +221,39 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         }
       }
 
+      // Initialize default webhook and load webhooks from database
+      final db = DatabaseService.instance;
+      final hasDefault = await db.hasDefaultWebhook();
+      if (!hasDefault) {
+        await db.createWebhook(
+          Webhook(
+            title: 'Default Webhook',
+            url: 'https://n8n.grapph.com/webhook/allcoderelay',
+            headers: {'Content-Type': 'application/json'},
+            timestamp: DateTime.now().millisecondsSinceEpoch,
+          ),
+        );
+      }
+
+      final webhooks = await db.getAllWebhooks();
+
       emit(
         state.copyWith(
           webhookUrl: url ?? state.webhookUrl,
           webhookTitle: title ?? state.webhookTitle,
           webhookHeaders: headers,
+          originalWebhookUrl: url ?? state.webhookUrl,
+          originalWebhookTitle: title ?? state.webhookTitle,
+          originalWebhookHeaders: headers,
           isDarkMode: isDarkMode == 'true',
           isContinuousScanning: isContinuousScanning == 'true',
-          scanDelay: scanDelay != null
-              ? double.parse(scanDelay)
-              : state.scanDelay,
+          scanDelay:
+              scanDelay != null ? double.parse(scanDelay) : state.scanDelay,
           beepEnabled: beepEnabled == null ? true : beepEnabled == 'true',
           copyToClipboard: copyToClipboard == 'true',
           preferredScanMode: preferredScanMode,
           isLoading: false,
+          webhooks: webhooks,
         ),
       );
     } catch (e) {
@@ -416,6 +471,115 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       }
       await _storage.write(key: 'preferred_scan_mode', value: modeStr);
       emit(state.copyWith(preferredScanMode: event.mode));
+    } catch (e) {
+      // Handle error
+    }
+  }
+
+  Future<void> _onLoadWebhooks(
+    LoadWebhooks event,
+    Emitter<SettingsState> emit,
+  ) async {
+    try {
+      final db = DatabaseService.instance;
+
+      // Initialize default webhook if it doesn't exist
+      final hasDefault = await db.hasDefaultWebhook();
+      if (!hasDefault) {
+        await db.createWebhook(
+          Webhook(
+            title: 'Default Webhook',
+            url: 'https://n8n.grapph.com/webhook/allcoderelay',
+            headers: {'Content-Type': 'application/json'},
+            timestamp: DateTime.now().millisecondsSinceEpoch,
+          ),
+        );
+      }
+
+      final webhooks = await db.getAllWebhooks();
+      emit(state.copyWith(webhooks: webhooks));
+    } catch (e) {
+      // Handle error
+    }
+  }
+
+  Future<void> _onSwitchWebhook(
+    SwitchWebhook event,
+    Emitter<SettingsState> emit,
+  ) async {
+    try {
+      await _storage.write(key: 'webhook_url', value: event.webhook.url);
+      await _storage.write(key: 'webhook_title', value: event.webhook.title);
+
+      final headersJson = jsonEncode(event.webhook.headers);
+      await _storage.write(key: 'webhook_headers', value: headersJson);
+
+      emit(
+        state.copyWith(
+          webhookUrl: event.webhook.url,
+          webhookTitle: event.webhook.title,
+          webhookHeaders: event.webhook.headers,
+          originalWebhookUrl: event.webhook.url,
+          originalWebhookTitle: event.webhook.title,
+          originalWebhookHeaders: event.webhook.headers,
+        ),
+      );
+    } catch (e) {
+      // Handle error
+    }
+  }
+
+  Future<void> _onDeleteWebhook(
+    DeleteWebhook event,
+    Emitter<SettingsState> emit,
+  ) async {
+    try {
+      final db = DatabaseService.instance;
+      await db.deleteWebhook(event.webhookId);
+
+      final updatedWebhooks = await db.getAllWebhooks();
+      emit(state.copyWith(webhooks: updatedWebhooks));
+    } catch (e) {
+      // Handle error
+    }
+  }
+
+  Future<void> _onSaveWebhookToHistory(
+    SaveWebhookToHistory event,
+    Emitter<SettingsState> emit,
+  ) async {
+    try {
+      final db = DatabaseService.instance;
+      
+      // Check if webhook with same URL and title already exists
+      final existingWebhooks = await db.getAllWebhooks();
+      final alreadyExists = existingWebhooks.any(
+        (w) => w.url == state.webhookUrl && w.title == state.webhookTitle,
+      );
+
+      if (!alreadyExists) {
+        // Only create if it doesn't already exist
+        final webhook = Webhook(
+          title: state.webhookTitle,
+          url: state.webhookUrl,
+          headers: state.webhookHeaders,
+          timestamp: DateTime.now().millisecondsSinceEpoch,
+        );
+        await db.createWebhook(webhook);
+      }
+
+      // Load updated webhooks list
+      final updatedWebhooks = await db.getAllWebhooks();
+      
+      // Update original values to match current (button becomes disabled)
+      emit(
+        state.copyWith(
+          webhooks: updatedWebhooks,
+          originalWebhookUrl: state.webhookUrl,
+          originalWebhookTitle: state.webhookTitle,
+          originalWebhookHeaders: state.webhookHeaders,
+        ),
+      );
     } catch (e) {
       // Handle error
     }

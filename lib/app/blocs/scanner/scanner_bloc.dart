@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -11,6 +12,11 @@ abstract class ScannerEvent {}
 class ScanCode extends ScannerEvent {
   final String code;
   ScanCode(this.code);
+}
+
+class RetryWebhook extends ScannerEvent {
+  final ScanResult scan;
+  RetryWebhook(this.scan);
 }
 
 class LoadScans extends ScannerEvent {}
@@ -52,6 +58,7 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
     : _settingsBloc = settingsBloc,
       super(ScannerInitial()) {
     on<ScanCode>(_onScanCode);
+    on<RetryWebhook>(_onRetryWebhook);
     on<LoadScans>(_onLoadScans);
     on<UpdateScan>(_onUpdateScan);
     on<DeleteScan>(_onDeleteScan);
@@ -86,7 +93,7 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
         String code = event.code;
 
         // Try to parse JSON if response body is not empty
-        if (response.body.isNotEmpty) {
+        if (response.bodyBytes.isNotEmpty) {
           try {
             final responseData = jsonDecode(utf8.decode(response.bodyBytes));
             if (responseData is Map) {
@@ -103,6 +110,7 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
           code: code,
           codeValue: codeValue,
           timestamp: DateTime.now(),
+          webhookError: null,
         );
         await _db.create(scan);
         final scans = await _db.getAllScans();
@@ -114,6 +122,8 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
           code: event.code,
           codeValue: '',
           timestamp: DateTime.now(),
+          webhookError: 'Server error: ${response.statusCode}',
+          lastWebhookAttempt: DateTime.now(),
         );
         await _db.create(scan);
         final scans = await _db.getAllScans();
@@ -127,10 +137,83 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
         code: event.code,
         codeValue: '',
         timestamp: DateTime.now(),
+        webhookError: e.toString(),
+        lastWebhookAttempt: DateTime.now(),
       );
       await _db.create(scan);
       final scans = await _db.getAllScans();
       await Future.delayed(const Duration(seconds: 2));
+      emit(ScannerSuccess(scans));
+    }
+  }
+
+  Future<void> _onRetryWebhook(
+    RetryWebhook event,
+    Emitter<ScannerState> emit,
+  ) async {
+    debugPrint('🔄 [RetryWebhook] Starting webhook retry for code: ${event.scan.code}');
+    try {
+      final webhookUrl = _settingsBloc.state.webhookUrl;
+      final webhookHeaders = Map<String, String>.from(
+        _settingsBloc.state.webhookHeaders,
+      );
+
+      debugPrint('🔄 [RetryWebhook] Sending POST to: $webhookUrl');
+      final response = await http.post(
+        Uri.parse(webhookUrl),
+        headers: webhookHeaders,
+        body: jsonEncode({'code': event.scan.code}),
+      );
+
+      debugPrint('🔄 [RetryWebhook] Response status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        // Webhook successful, clear the error
+        debugPrint('✓ [RetryWebhook] Success! Clearing error');
+        String codeValue = event.scan.codeValue;
+
+        // Try to parse JSON if response body is not empty
+        if (response.bodyBytes.isNotEmpty) {
+          try {
+            final responseData = jsonDecode(utf8.decode(response.bodyBytes));
+            if (responseData is Map) {
+              codeValue = responseData['codevalue'] ?? event.scan.codeValue;
+            }
+          } catch (jsonError) {
+            // Keep existing codeValue
+          }
+        }
+
+        final updatedScan = event.scan.copyWith(
+          codeValue: codeValue,
+          clearWebhookError: true,
+        );
+        await _db.update(updatedScan);
+        final scans = await _db.getAllScans();
+        debugPrint('✓ [RetryWebhook] Emitting ScannerSuccess');
+        emit(ScannerSuccess(scans));
+      } else {
+        // Still failing, update error
+        debugPrint('✗ [RetryWebhook] Server error: ${response.statusCode}');
+        final updatedScan = event.scan.copyWith(
+          webhookError: 'Server error: ${response.statusCode}',
+          lastWebhookAttempt: DateTime.now(),
+        );
+        await _db.update(updatedScan);
+        final scans = await _db.getAllScans();
+        debugPrint('✗ [RetryWebhook] Emitting ScannerSuccess with error');
+        emit(ScannerSuccess(scans));
+      }
+    } catch (e) {
+      // Retry failed, update error
+      debugPrint('✗ [RetryWebhook] Exception: $e');
+      final updatedScan = event.scan.copyWith(
+        webhookError: e.toString(),
+        lastWebhookAttempt: DateTime.now(),
+      );
+      await _db.update(updatedScan);
+      final scans = await _db.getAllScans();
+      debugPrint('✗ [RetryWebhook] Emitting ScannerSuccess with exception error');
       emit(ScannerSuccess(scans));
     }
   }

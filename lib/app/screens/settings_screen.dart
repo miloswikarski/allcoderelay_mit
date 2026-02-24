@@ -9,6 +9,8 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -22,6 +24,17 @@ class SettingsScreen extends StatelessWidget {
           if (state.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
+
+          // Check if webhook has been edited
+          final isWebhookEdited = state.originalWebhookUrl != null &&
+              (state.webhookUrl != state.originalWebhookUrl ||
+                  state.webhookTitle != state.originalWebhookTitle ||
+                  state.webhookHeaders != state.originalWebhookHeaders);
+
+          // Check if this webhook already exists in history
+          final webhookExistsInHistory = state.webhooks.any(
+            (w) => w.url == state.webhookUrl && w.title == state.webhookTitle,
+          );
 
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -55,7 +68,18 @@ class SettingsScreen extends StatelessWidget {
                           color: CupertinoColors.label.resolveFrom(context),
                         ),
                         decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: isDark
+                                  ? CupertinoColors.separator.resolveFrom(context)
+                                  : CupertinoColors.systemGrey4.resolveFrom(context),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: CupertinoColors.activeBlue.resolveFrom(context),
+                            ),
+                          ),
                           hintText: 'Enter webhook title',
                           hintStyle: TextStyle(
                             color: CupertinoColors.secondaryLabel.resolveFrom(
@@ -84,7 +108,18 @@ class SettingsScreen extends StatelessWidget {
                           color: CupertinoColors.label.resolveFrom(context),
                         ),
                         decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: isDark
+                                  ? CupertinoColors.separator.resolveFrom(context)
+                                  : CupertinoColors.systemGrey4.resolveFrom(context),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: CupertinoColors.activeBlue.resolveFrom(context),
+                            ),
+                          ),
                           hintText: 'Enter webhook URL',
                           hintStyle: TextStyle(
                             color: CupertinoColors.secondaryLabel.resolveFrom(
@@ -159,14 +194,77 @@ class SettingsScreen extends StatelessWidget {
                               ),
                             ),
                           )
-                          .toList(),
+                          ,
+                      const SizedBox(height: 16),
+                      if (isWebhookEdited)
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: webhookExistsInHistory
+                                ? null
+                                : () {
+                                    context
+                                        .read<SettingsBloc>()
+                                        .add(SaveWebhookToHistory());
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                      SnackBar(
+                                        content: const Text(
+                                          'Webhook saved to history and activated',
+                                        ),
+                                        backgroundColor: Colors.green
+                                            .withValues(alpha: 0.9),
+                                        duration: const Duration(seconds: 2),
+                                      ),
+                                    );
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: webhookExistsInHistory
+                                  ? Colors.grey
+                                  : CupertinoColors.activeBlue
+                                      .resolveFrom(context),
+                              foregroundColor: Colors.white,
+                            ),
+                            child: Text(
+                              webhookExistsInHistory
+                                  ? 'Already in History'
+                                  : 'Save to History',
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 16),
               Card(
+                child: ListTile(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
+                  title: Text(
+                    'Webhook History',
+                    style: TextStyle(
+                      color: CupertinoColors.label.resolveFrom(context),
+                    ),
+                  ),
+                  subtitle: Text(
+                    'View and manage saved webhooks',
+                    style: TextStyle(
+                      color: CupertinoColors.secondaryLabel.resolveFrom(
+                        context,
+                      ),
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.arrow_forward_ios,
+                    color: CupertinoColors.label.resolveFrom(context),
+                  ),
+                  onTap: () => context.go('/settings/webhook-history'),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
                 child: SwitchListTile(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
                   title: Text(
                     'Dark Mode',
                     style: TextStyle(
@@ -182,6 +280,7 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Card(
                 child: SwitchListTile(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -225,6 +324,7 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Card(
                 child: SwitchListTile(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
                   title: Text(
                     'Beep on Scan',
                     style: TextStyle(
@@ -248,6 +348,7 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Card(
                 child: SwitchListTile(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
                   title: Text(
                     'Copy to Clipboard',
                     style: TextStyle(
@@ -295,6 +396,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       RadioListTile<PreferredScanMode>(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
                         title: Text(
                           'NFC + Barcode',
                           style: TextStyle(
@@ -320,6 +422,7 @@ class SettingsScreen extends StatelessWidget {
                         },
                       ),
                       RadioListTile<PreferredScanMode>(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
                         title: Text(
                           'Barcode Only',
                           style: TextStyle(
@@ -345,6 +448,7 @@ class SettingsScreen extends StatelessWidget {
                         },
                       ),
                       RadioListTile<PreferredScanMode>(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
                         title: Text(
                           'NFC Only',
                           style: TextStyle(
@@ -376,6 +480,7 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Card(
                 child: ListTile(
+                  tileColor: isDark ? const Color.fromARGB(255, 30, 120, 160) : null,
                   title: Text(
                     'About',
                     style: TextStyle(
@@ -399,49 +504,75 @@ class SettingsScreen extends StatelessWidget {
   void _showAddHeaderDialog(BuildContext context) {
     String headerKey = '';
     String headerValue = '';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add Custom Header'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Header Name',
-                hintText: 'e.g. Authorization',
-              ),
-              onChanged: (value) => headerKey = value,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Add Custom Header'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Header Name',
+                    hintText: 'e.g. Authorization',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? CupertinoColors.separator.resolveFrom(context)
+                            : CupertinoColors.systemGrey4.resolveFrom(context),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: CupertinoColors.activeBlue.resolveFrom(context),
+                      ),
+                    ),
+                  ),
+                  onChanged: (value) => headerKey = value,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Header Value',
+                    hintText: 'e.g. Bearer token123',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? CupertinoColors.separator.resolveFrom(context)
+                            : CupertinoColors.systemGrey4.resolveFrom(context),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: CupertinoColors.activeBlue.resolveFrom(context),
+                      ),
+                    ),
+                  ),
+                  onChanged: (value) => headerValue = value,
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Header Value',
-                hintText: 'e.g. Bearer token123',
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
               ),
-              onChanged: (value) => headerValue = value,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+              TextButton(
+                onPressed: () {
+                  if (headerKey.isNotEmpty && headerValue.isNotEmpty) {
+                    context.read<SettingsBloc>().add(
+                      AddWebhookHeader(headerKey, headerValue),
+                    );
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text('Add'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              if (headerKey.isNotEmpty && headerValue.isNotEmpty) {
-                context.read<SettingsBloc>().add(
-                  AddWebhookHeader(headerKey, headerValue),
-                );
-                Navigator.pop(context);
-              }
-            },
-            child: const Text('Add'),
-          ),
-        ],
-      ),
     );
   }
 }
